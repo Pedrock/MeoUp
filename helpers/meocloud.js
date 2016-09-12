@@ -7,7 +7,7 @@ var SIGNATURE_METHOD = 'HMAC-SHA1';
 
 var api_config = {
 	api : {
-		root : "sandbox/",
+		root : "sandbox",
 		storage : "/1",
 		endpoint : "https://api.meocloud.pt/1/",
 		content_endpoint : "https://api-content.meocloud.pt/1/"
@@ -50,7 +50,7 @@ module.exports.MeoCloud = function(config) {
 		var qstring = querystring.stringify(params);
 
 		if (options.method === "post")
-			options.body = qstring;
+			options.form = qstring;
 		else
 			options.uri += ((qstring !== "") ? ["?", qstring].join("") : qstring);
 
@@ -66,16 +66,26 @@ module.exports.MeoCloud = function(config) {
 
 	this.getUploadPipe = function(path, callback)
 	{
+		if (path && !path.startsWith('/')) path = '/' + path;
 		return request(getOptions("put", [api_content_endpoint, "Files/", storage_root, path].join(""), callback));
 	};
 
 	this.share = function(path, callback)
 	{
+		if (path && !path.startsWith('/')) path = '/' + path;
 		request(getOptions("post", [api_content_endpoint, "Shares/", storage_root, path].join("")),
 			function(error, response, body) {
-				console.log('error:', error);
-				console.log('body:', body);
 				callback(body);
+			});
+	};
+
+	this.delete = function(path, callback)
+	{
+		if (path && !path.startsWith('/')) path = '/' + path;
+		request(getOptions("post", [api_content_endpoint, "Fileops/Delete"].join(""), {root: storage_root, path: path}),
+			function(error, response, body) {
+				if (callback !== undefined)
+					callback(body);
 			});
 	};
 };

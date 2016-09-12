@@ -21,6 +21,15 @@ module.exports.create = function(user_id, url, filename, callback)
 	});
 };
 
+module.exports.getFilename = function(user_id, download_id, callback)
+{
+	db.query('SELECT filename FROM downloads WHERE id = ? AND user_id = ?', [download_id, user_id], function(err, results) {
+		if (err)
+			return next(err);
+		callback(results);
+	});
+};
+
 module.exports.delete = function(user_id, download_id, callback)
 {
 	db.query('DELETE FROM downloads WHERE id = ? AND user_id = ?', [download_id, user_id], function(err, results) {

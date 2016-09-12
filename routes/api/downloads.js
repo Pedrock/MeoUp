@@ -11,7 +11,15 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
 	if (req.body.delete === undefined) return next();
-	Downloads.delete(req.session.user, req.body.delete);
+	Downloads.getFilename(req.session.user, req.body.delete, function(results)
+	{
+		if (results[0] !== undefined && results[0].filename !== undefined)
+		{
+			Downloads.delete(req.session.user, req.body.delete);
+			var meoCloud = new (rootRequire("helpers/meocloud")).MeoCloud(req.session);
+			meoCloud.delete(results[0].filename);
+		}
+	});
 });
 
 router.post('/', function(req, res, next) {
