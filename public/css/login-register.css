@@ -22,13 +22,13 @@ body {
 	-moz-transition: all 0.1s linear;
 	transition: all 0.1s linear;
 }
-.panel-login>.panel-heading a.active{
+.panel-login>.panel-heading .active{
 	color: #029f5b;
 	font-size: 18px;
 }
 .panel-login>.panel-heading hr{
 	margin-top: 10px;
-	margin-bottom: 0px;
+	margin-bottom: 0;
 	clear: both;
 	border: 0;
 	height: 1px;

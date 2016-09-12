@@ -1,15 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>MeoUp - Login</title>
+	<title>MeoUp - MeoCloud Login</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link rel="stylesheet" href="css/login-register.css">
 </head>
 <body>
-	<a href="<%= authorizeURL %>" target="_blank">Get Pin</a>
-	<form method="POST">
-		Pin:<br>
-		<input type="text" name="pin" value=""><br>
-		<input type="submit" value="Submit">
-	</form> 
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-login">
+					<div class="panel-heading">
+						<div class="row">
+								<span class="active">MeoCloud Login</span>
+						</div>
+						<hr>
+					</div>
+					<div class="panel-body">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-4 col-sm-offset-4">
+										<a href="<%= authorizeURL %>" target="_blank" class="btn btn-primary form-control" tabindex="1">Get Pin</a>
+									</div>
+								</div>
+							</div>
+							<form method="POST" class="form-horizontal">
+								<div class="form-group">
+									<div class="col-sm-6 col-sm-offset-3">
+										<input type="text" class="form-control" id="pin" name="pin" placeholder="Pin" tabindex="2">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-6 col-sm-offset-3">
+										<input type="submit" tabindex="3" class="form-control btn btn-login" value="Submit">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
