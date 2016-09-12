@@ -12,7 +12,8 @@ router.post('/', function(req, res, next) {
 		if (err)
 		{
 			res.end('Download failed.');
-			throw err;
+			console.log(err.stack);
+			return next(err);
 		}
 
 		var meoCloud = new (rootRequire('helpers/meocloud')).MeoCloud(req.session);

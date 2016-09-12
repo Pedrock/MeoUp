@@ -5,19 +5,22 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
 
 global.rootRequire = function(name) {
 	return require(__dirname + '/' + name);
 };
 
+var sessionStore = new MySQLStore({}, rootRequire('./models/db'));
+
 var app = express();
 
-var SECRET = 'JIDSJIFJISDFV)#(#%#838424JJKSDFDKJF';
-
 app.use(session({
-	secret: SECRET,
-	resave: false,
-	saveUninitialized: false
+	key: 'session',
+	secret: rootRequire('config').session_secret,
+	store: sessionStore,
+	resave: true,
+	saveUninitialized: true
 }));
 
 // view engine setup
@@ -29,7 +32,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser(SECRET));
+app.use(cookieParser(rootRequire('config').cookie_secret));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/health', function (req, res) {
@@ -112,6 +115,5 @@ app.use(function(err, req, res, next) {
 		error: {}
 	});
 });
-
 
 module.exports = app;

@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   username varchar(255) NOT NULL UNIQUE,
   password binary(20) NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE users (
   token_secret varchar(40) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE downloads (
+CREATE TABLE IF NOT EXISTS downloads (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   user_id INTEGER NOT NULL REFERENCES users(id),
   url varchar(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE downloads (
   share_url varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE login_tokens (
+CREATE TABLE IF NOT EXISTS login_tokens (
   user_id INTEGER NOT NULL REFERENCES users(id),
 	token VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
