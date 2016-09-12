@@ -16,7 +16,7 @@ router.post('/', function(req, res, next) {
 		if (results[0] !== undefined && results[0].filename !== undefined)
 		{
 			Downloads.delete(req.session.user, req.body.delete);
-			var meoCloud = new (rootRequire("helpers/meocloud")).MeoCloud(req.session);
+			var meoCloud = new (rootRequire("helpers/meocloud")).MeoCloud(req.MeoUp);
 			meoCloud.delete(results[0].filename);
 		}
 	});
@@ -55,7 +55,7 @@ router.post('/', function(req, res, next) {
 
 		console.log('Downloading:', filename);
 
-		var meoCloud = new (rootRequire("helpers/meocloud")).MeoCloud(req.session);
+		var meoCloud = new (rootRequire("helpers/meocloud")).MeoCloud(req.MeoUp);
 		rootRequire("helpers/uploader").uploadFromUrl(meoCloud, r, filename, req.session.user, url);
 		res.end('Download started.');
 	});

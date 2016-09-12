@@ -12,7 +12,11 @@ var uploadFromUrl = function(api, stream, filename, user_id, url) {
 	Downloads.create(user_id, url, filename, function(download_id) {
 		stream.on('progress', function (state) {
 			console.log('progress', state.percentage);
-			Downloads.updateProgress(user_id, download_id, state.size.transferred, state.size.total);
+			Downloads.updateProgress(user_id, download_id, state.size.transferred, state.size.total, function(results)
+				{
+					if (!results.affectedRows)
+						stream.stop();
+				});
 		})
 			.on('error', function (err) {
 				console.log('error', err);
@@ -22,13 +26,19 @@ var uploadFromUrl = function(api, stream, filename, user_id, url) {
 				console.log('progress', 'Finished');
 				setTimeout(function()
 				{
+					var afterFinished = function(results) {
+						if (!results.affectedRows) {
+							api.delete(filename);
+						}
+					};
+
 					api.share(filename, function(body) {
 						if (body) {
 							var share_url = JSON.parse(body).url;
-							Downloads.setFinished(user_id, download_id, share_url);
+							Downloads.setFinished(user_id, download_id, share_url, afterFinished);
 						}
 						else
-							Downloads.setFinished(user_id, download_id, null);
+							Downloads.setFinished(user_id, download_id, null, afterFinished);
 					});
 				}, 1000);
 			});

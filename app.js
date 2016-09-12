@@ -15,12 +15,14 @@ var sessionStore = new MySQLStore({}, rootRequire('./models/db'));
 
 var app = express();
 
+app.use(function(req,res,next){ req.MeoUp = {}; next(); });
+
 app.use(session({
 	key: 'session',
 	secret: rootRequire('config').session_secret,
 	store: sessionStore,
-	resave: true,
-	saveUninitialized: true
+	resave: false,
+	saveUninitialized: false
 }));
 
 // view engine setup
@@ -28,7 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -74,9 +76,14 @@ app.use('/oauth', require('./routes/oauth'));
 
 app.use(function(req, res, next) {
 	var Users = require('./models/users.js');
-	Users.hasOauth(req.session, function(hasOauth) {
-		if (hasOauth)
-			next();
+
+	Users.getAccessToken(req.session.user, function(token, token_secret) {
+		if (token && token_secret)
+		{
+			req.MeoUp.token = token;
+			req.MeoUp.token_secret = token_secret;
+			return next();
+		}
 		else
 			res.redirect('/oauth');
 	});

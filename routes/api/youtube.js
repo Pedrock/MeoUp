@@ -7,7 +7,7 @@ var router = express.Router();
 router.post('/', function(req, res, next) {
 	var youtubedl = require('youtube-dl');
 	var url = req.body.url;
-
+	
 	youtubedl.getInfo(url, function(err, info) {
 		if (err)
 		{
@@ -16,7 +16,7 @@ router.post('/', function(req, res, next) {
 			return next(err);
 		}
 
-		var meoCloud = new (rootRequire('helpers/meocloud')).MeoCloud(req.session);
+		var meoCloud = new (rootRequire('helpers/meocloud')).MeoCloud(req.MeoUp);
 
 		rootRequire('helpers/uploader')
 			.uploadFromUrl(meoCloud, progress(request.get(info.url)), info._filename, req.session.user, url);

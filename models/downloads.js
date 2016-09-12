@@ -45,7 +45,8 @@ module.exports.updateProgress = function(user_id, download_id, downloaded, downl
 		[downloaded,download_size,download_id,user_id], function(err, results) {
 		if (err)
 			return next(err);
-		if (callback !== undefined) callback(results);
+		if (callback !== undefined)
+			callback(results);
 	});
 };
 

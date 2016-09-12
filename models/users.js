@@ -30,22 +30,6 @@ module.exports.isValidLogin = function(username, password, callback)
 	});
 };
 
-module.exports.hasOauth = function(session, callback)
-{
-	if (session.oauth !== undefined)
-		return callback(session.oauth);
-	db.query('SELECT token, token_secret FROM users WHERE id = ? AND token IS NOT NULL AND token_secret IS NOT NULL;', [session.user], function(err, results) {
-		if (err)
-			return next(err);
-		session.oauth = results[0] !== undefined;
-		if (session.oauth)  {
-			session.token = results[0].token;
-			session.token_secret = results[0].token_secret;
-		}
-		return callback(session.oauth);
-	});
-};
-
 module.exports.getAccessToken = function(user_id, callback)
 {
 	db.query('SELECT token, token_secret FROM users WHERE id = ?;', [user_id], function(err, results) {
