@@ -1,0 +1,41 @@
+<div id="timestamp" style="display:none"><%= Math.floor(new Date() / 1000) %></div>
+
+<% downloads.forEach(function(row)
+{
+	if (row['status'] == 3)
+		progress = 100;
+	else if (row['status'] == 2)
+		progress = "Uploading";
+	else if (row['status'] == 0)
+		progress = "Failed";
+	else if (row['size'] > 0)
+        progress = (Math.floor(row['downloaded'] / row['size'] * 10000) / 100);
+    else
+        progress = 50;
+%>
+
+<div class="download" data-id="<%= row['id'] %>" data-status="<%= row['status'] %>">
+
+    <div>
+        <a class="download-link" href="<%= row['share_url'] %>" title="<%= row['url'] %>"><%= row['filename'] %></a>
+    </div>
+
+    <% var download_url = (row['share_url'] == null) ? null : row['share_url'].replace(/\/$/, '').replace("//meocloud.pt/link/","//cld.pt/dl/download/"); %>
+
+    <div class="download-side-icons">
+
+        <a class="download-icon" href="<%= download_url %>?download=true" title="<%= row['url'] %>"><img src="img/download.gif" width="20"></a>
+
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped<%= row['status'] % 3 ? ' active' : '' %>" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= progress %>" style="width:<%= progress %>%">
+                <%= progress %> %
+            </div>
+        </div>
+
+            <input class="delete-icon" type="image" width="16" src="img/delete.gif" alt="Delete"
+                         onclick="deleteDownload(<%= row['id'] %>)"/>
+
+    </div>
+
+</div>
+<% }); %>

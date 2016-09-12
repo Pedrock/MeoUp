@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/index.css">
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+</head>
+<body>
+	<div id="wrapper">
+
+		<div class="btn-group">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+					New Download <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a id="new-download" onclick="return false;" href="#">From URL</a></li>
+					<li><a id="youtube-download" onclick="return false;" href="#">Youtube</a></li>
+				</ul>
+			</div>
+		</div>
+		<span class="pull-right">
+		<a href="/logout">Log out</a>
+		</span>
+
+		<div id="downloads">
+			<%- include downloads_list.ejs %>
+		</div>
+	</div>
+
+	<script src="js/index.js"></script>
+</body>
+</html>

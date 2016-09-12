@@ -1,0 +1,69 @@
+#wrapper {
+    width: 95%;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+}
+
+#downloads {
+    margin-top: 20px;
+}
+
+.download .progress {
+    display: inline-block;
+    width: 200px;
+    margin-bottom: 0;
+}
+
+.download {
+    width: 100%;
+    display: inline-block;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border: 1px solid #aaa;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.download .download-link {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.delete-icon {
+    vertical-align: top;
+    margin-left: 5px;
+    margin-top: 1px;
+}
+
+.download-icon > img {
+    vertical-align: top;
+    margin-right: 6px;
+}
+
+.download-side-icons {
+    padding-top: 5px;
+    padding-right: 5px;
+    float: right;
+}
+
+.download {position: relative;}
+
+ 
+
+@media only screen and (min-width: 500px) {
+  .download:before {
+    content: '';
+    float: right;
+    display: block;
+    width: 250px;
+    margin-bottom: 10px;
+  }
+  .download-side-icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
