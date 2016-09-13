@@ -3,12 +3,20 @@ var router = express.Router();
 
 var oa = rootRequire('helpers/meocloud.js').OAuth();
 
-router.get('/', function(req, res, next) {
+var renderInitialOauthPage = function(req, res, params)
+{
 	oa.getOAuthRequestToken(function(error, oauth_token, oauth_access_token_secret){
 		req.session.oauth_token = oauth_token;
 		req.session.oauth_access_token_secret = oauth_access_token_secret;
-		res.render('login_oauth', {authorizeURL: 'https://meocloud.pt/oauth/authorize?oauth_token=' + oauth_token});
+		if (params === undefined)
+			params = {};
+		params.authorizeURL = 'https://meocloud.pt/oauth/authorize?oauth_token=' + oauth_token;
+		res.render('login_oauth', params);
 	});
+};
+
+router.get('/', function(req, res, next) {
+	renderInitialOauthPage(req, res);
 });
 
 router.post('/', function(req, res, next) {
@@ -20,8 +28,10 @@ router.post('/', function(req, res, next) {
 
 			if (error) {
 				console.log(error);
-				res.redirect('/');
-				return;
+				if (error.statusCode == 400 && error.data)
+					return renderInitialOauthPage(req, res, {error_message: error.data});
+				else
+					return renderInitialOauthPage(req, res, {error_message: 'Unexpected error occurred. Please try again.'});
 			}
 			
 			var Users = rootRequire('models/users.js');

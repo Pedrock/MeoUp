@@ -32,7 +32,7 @@ router.post('/', function(req, res, next) {
 				res.redirect('/');
 		}
 		else
-			res.redirect('/login?error');
+			res.render('login', {error_message: 'Login not found.'});
 	});
 });
 

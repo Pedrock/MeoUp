@@ -5,12 +5,24 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="css/login-register.css">
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 </head>
 <body>
-
 	<div class="container">
+		<div style="margin-bottom: 40px;">
+			<span class="pull-right">
+				<a href="/logout">Log out</a>
+			</span>
+		</div>
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
+				<% if (locals.error_message) { %>
+				<div class="alert alert-danger">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+					<strong>Error!</strong> <%= error_message %>
+				</div>
+				<% } %>
 				<div class="panel panel-login">
 					<div class="panel-heading">
 						<div class="row">

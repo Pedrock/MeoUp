@@ -4,14 +4,23 @@
 {
 	if (row['status'] == 3)
 		progress = 100;
-	else if (row['status'] == 2)
-		progress = "Uploading";
 	else if (row['status'] == 0)
 		progress = "Failed";
 	else if (row['size'] > 0)
         progress = (Math.floor(row['downloaded'] / row['size'] * 10000) / 100);
+    else if (row['downloaded'] == 0)
+        progress = 0;
     else
         progress = 50;
+
+    var progress_text;
+
+    if (isNaN(progress)) {
+        progress_text = progress;
+        var progress = 100;
+    }
+    else
+        progress_text = progress + ' %';
 %>
 
 <div class="download" data-id="<%= row['id'] %>" data-status="<%= row['status'] %>">
@@ -28,7 +37,7 @@
 
         <div class="progress">
             <div class="progress-bar progress-bar-striped<%= row['status'] % 3 ? ' active' : '' %>" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= progress %>" style="width:<%= progress %>%">
-                <%= progress %> %
+                <%= progress_text %>
             </div>
         </div>
 
