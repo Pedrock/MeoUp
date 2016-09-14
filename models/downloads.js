@@ -72,7 +72,7 @@ module.exports.setFinished = function(user_id, download_id, share_url, callback)
 
 module.exports.getUpdates = function(user_id, timestamp, callback)
 {
-	db.query('SELECT id,downloaded,download_size AS size,status,share_url,NOW() AS now FROM downloads WHERE last_update > ? AND user_id = ?',
+	db.query('SELECT id,downloaded,download_size AS size,status,share_url,NOW() AS now FROM downloads WHERE CONVERT_TZ(last_update, @@session.time_zone, \'+00:00\') > ? AND user_id = ?',
 		[timestamp,user_id], function(err, results) {
 			if (err)
 				return next(err);

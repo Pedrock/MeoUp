@@ -39,6 +39,8 @@ function startDownload(endpoint, url, modal)
 	modal.data('bs.modal').isShown = false;
 	var spinner = modal.find('.spinner');
 	spinner.show();
+	var footer = modal.find('.modal-footer');
+	footer.children('.btn').addClass('disabled');
 	$.post(endpoint, {url:url}, function(data, status, jqXHR){
 		refreshDownloads();
 		modal.data('bs.modal').isShown = true;
@@ -46,11 +48,12 @@ function startDownload(endpoint, url, modal)
 	}, "text")
 		.fail(function(jqXHR) {
 			modal.data('bs.modal').isShown = true;
-			modal.find('.modal-footer').append('<div class="alert alert-danger"> \
+			footer.append('<div class="alert alert-danger"> \
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a> \
 				<strong>Error!</strong> Download failed. Please check your URL and try again.</div>');
 		}).always(function() {
 			spinner.hide();
+			footer.children('.btn').removeClass('disabled');
 		});
 }
 
