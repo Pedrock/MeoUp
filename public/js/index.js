@@ -1,4 +1,5 @@
 $(function() {
+	var active = false;
 
 	$("#new-download").click(function() {
 		$('#file-input').val('');
@@ -32,30 +33,34 @@ $(function() {
 		$(this).find('.spinner').hide();
 		$(this).find('input[type="text"]').val('');
 	});
-});
 
-function startDownload(endpoint, url, modal)
-{
-	modal.data('bs.modal').isShown = false;
-	var spinner = modal.find('.spinner');
-	spinner.show();
-	var footer = modal.find('.modal-footer');
-	footer.children('.btn').addClass('disabled');
-	$.post(endpoint, {url:url}, function(data, status, jqXHR){
-		refreshDownloads();
-		modal.data('bs.modal').isShown = true;
-		$('.modal').modal('hide');
-	}, "text")
-		.fail(function(jqXHR) {
+	function startDownload(endpoint, url, modal)
+	{
+		if (active) return;
+		active = true;
+		modal.data('bs.modal').isShown = false;
+		var spinner = modal.find('.spinner');
+		spinner.show();
+		var footer = modal.find('.modal-footer');
+		footer.children('.btn').addClass('disabled');
+		$.post(endpoint, {url:url}, function(data, status, jqXHR){
+			refreshDownloads();
 			modal.data('bs.modal').isShown = true;
-			footer.append('<div class="alert alert-danger"> \
+			$('.modal').modal('hide');
+		}, "text")
+			.fail(function(jqXHR) {
+				modal.data('bs.modal').isShown = true;
+				footer.append('<div class="alert alert-danger"> \
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a> \
 				<strong>Error!</strong> Download failed. Please check your URL and try again.</div>');
-		}).always(function() {
+			}).always(function() {
 			spinner.hide();
 			footer.children('.btn').removeClass('disabled');
+		}).always(function() {
+			active = false;
 		});
-}
+	}
+});
 
 function deleteDownload(id)
 {
