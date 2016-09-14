@@ -1,4 +1,4 @@
-<div id="timestamp" style="display:none"><%= Math.floor(new Date() / 1000) %></div>
+<div id="timestamp" style="display:none"><%= new Date().toISOString() %></div>
 
 <% downloads.forEach(function(row)
 {
@@ -33,7 +33,12 @@
 
     <div class="download-side-icons">
 
-        <a class="download-icon" href="<%= download_url %>?download=true" title="<%= row['url'] %>"><img src="img/download.gif" width="20"></a>
+        <a class="download-icon" href="<%= download_url %>?download=true" title="<%= row['url'] %>">
+            <span class="fa-stack fa">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-cloud-download fa-stack-1x fa-inverse"></i>
+            </span>
+        </a>
 
         <div class="progress">
             <div class="progress-bar progress-bar-striped<%= row['status'] % 3 ? ' active' : '' %>" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= progress %>" style="width:<%= progress %>%">
@@ -41,8 +46,9 @@
             </div>
         </div>
 
-            <input class="delete-icon" type="image" width="16" src="img/delete.gif" alt="Delete"
-                         onclick="deleteDownload(<%= row['id'] %>)"/>
+        <a class="delete-icon" href="javaScript:void(0);" onclick="deleteDownload(<%= row['id'] %>)">
+            <i class="fa fa-trash fa-lg"></i>
+        </a>
 
     </div>
 

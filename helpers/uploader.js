@@ -15,7 +15,7 @@ var uploadFromUrl = function(api, stream, filename, user_id, url) {
 			Downloads.updateProgress(user_id, download_id, state.size.transferred, state.size.total, function(results)
 				{
 					if (!results.affectedRows)
-						stream.stop();
+						stream.abort();
 				});
 		})
 			.on('error', function (err) {

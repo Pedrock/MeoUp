@@ -11,9 +11,10 @@ router.post('/', function(req, res, next) {
 	try {
 		youtubedl.getInfo(url, function (err, info) {
 			if (err) {
+				res.status(400);
 				res.end('Download failed.');
 				console.log(err.stack);
-				return next(err);
+				return;
 			}
 
 			try
@@ -23,11 +24,13 @@ router.post('/', function(req, res, next) {
 				rootRequire('helpers/uploader')
 					.uploadFromUrl(meoCloud, progress(request.get(info.url)), info._filename, req.session.user, url);
 
+				res.status(200);
 				res.end('Download started.');
 			}
 			catch (ex)
 			{
 				console.log(ex.stack);
+				res.status(400);
 				res.end('Download failed.');
 			}
 
@@ -36,6 +39,7 @@ router.post('/', function(req, res, next) {
 	catch (ex)
 	{
 		console.log(ex.stack);
+		res.status(400);
 		res.end('Download failed.');
 	}
 });

@@ -32,26 +32,43 @@
     text-overflow: ellipsis;
 }
 
-.delete-icon {
-    vertical-align: top;
-    margin-left: 5px;
-    margin-top: 1px;
+.download-icon {
+    text-decoration: none!important;
 }
 
-.download-icon > img {
+.download-icon > span {
     vertical-align: top;
-    margin-right: 6px;
+    line-height: inherit;
+}
+
+.download-icon .fa-circle {
+    color: #446ae4;
+    line-height: inherit;
+}
+
+.delete-icon > i {
+    vertical-align: 30%;
+    color: #8b8b8b;
 }
 
 .download-side-icons {
     padding-top: 5px;
     padding-right: 5px;
     float: right;
+    line-height: 1.5em;
 }
 
 .download {position: relative;}
 
- 
+.spinner > .fa-spinner {
+    vertical-align: middle;
+    font-size: 34px;
+}
+
+.modal-footer > .alert {
+    margin: 10px 0 0;
+    text-align: left;
+}
 
 @media only screen and (min-width: 500px) {
   .download:before {

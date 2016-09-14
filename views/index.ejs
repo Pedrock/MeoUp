@@ -7,11 +7,11 @@
 	<script src="js/jquery-1.11.3.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="css/font-awesome.min.css" rel="stylesheet" >
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 </head>
 <body>
 	<div id="wrapper">
-
 		<div class="btn-group">
 			<div class="btn-group">
 				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -33,5 +33,57 @@
 	</div>
 
 	<script src="js/index.js"></script>
+
+	<!-- Youtube Modal -->
+	<div id="youtube-modal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Download Video (from Youtube and other similar websites)</h4>
+				</div>
+				<form>
+					<div class="modal-body">
+						<label for="youtube-input">Video URL:</label>
+						<input id="youtube-input" type="text" class="form-control" autocomplete="off">
+					</div>
+					<div class="modal-footer">
+						<span class="spinner">
+							<i class="fa fa-spinner fa-spin fa-fw"></i>
+							<span class="sr-only">Loading...</span>
+						</span>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<input type="submit" class="btn btn-primary" value="Download">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- File Modal -->
+	<div id="file-modal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Download File From URL</h4>
+				</div>
+				<form>
+					<div class="modal-body">
+						<label for="file-input">File URL:</label>
+						<input id="file-input" type="text" class="form-control" autocomplete="off">
+					</div>
+					<div class="modal-footer">
+						<span class="spinner">
+							<i class="fa fa-spinner fa-spin fa-fw"></i>
+							<span class="sr-only">Loading...</span>
+						</span>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<input type="submit" class="btn btn-primary" value="Download">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
