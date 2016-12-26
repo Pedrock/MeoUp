@@ -48,7 +48,7 @@ var uploadFromUrl = function(api, stream, filename, user_id, url) {
 			})
 			.on('end', function () {
 				console.log('progress', 'Finished');
-				share(api, user_id, download_id, filename, 3);
+				share(api, user_id, download_id, filename, 6);
 			});
 	});
 };

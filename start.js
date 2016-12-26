@@ -8,10 +8,8 @@ const cluster = require('cluster'),
 let stopping = false;
 
 cluster.on('disconnect', function(worker) {
-    if (production) {
-        if (!stopping) {
-            cluster.fork();
-        }
+    if (production && !stopping) {
+        cluster.fork();
     } else {
         process.exit(1);
     }

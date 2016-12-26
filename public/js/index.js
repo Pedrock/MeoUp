@@ -1,4 +1,6 @@
 $(function() {
+	updateDownloads();
+	
 	var active = false;
 
 	$("#new-download").click(function() {
