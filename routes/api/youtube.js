@@ -9,8 +9,9 @@ router.post('/', function(req, res, next) {
 	var url = req.body.url;
 
 	try {
-		var options = ['--no-cache-dir'];
-		youtubedl.getInfo(url, options, function (err, info) {
+		var args = ['--no-cache-dir'];
+		var options = {maxBuffer: 10000 * 1024};
+		youtubedl.getInfo(url, args, options, function (err, info) {
 			if (err) {
 				res.status(400);
 				res.end('Download failed.');
