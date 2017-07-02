@@ -16,6 +16,7 @@ export const mutations = {
     state.user.firstName = data.user.firstName
     state.user.lastName = data.user.lastName
     state.user.email = data.user.email
+    state.user.admin = data.user.admin
   },
   SET_USERS (state, payload) {
     state.lists.users = payload.users

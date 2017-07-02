@@ -1,60 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-            enable-resize-watcher
-            disable-route-watcher
-            persistent
-            dark
-            :mini-variant.sync="mini"
-            v-model="drawer"
-            v-if="$store.state.user.isAuthenticated">
-      <v-list class="main-list">
-        <v-list-item>
-          <v-list-tile avatar tag="div">
-            <v-list-tile-avatar>
-              <img :src="vueniverseLogo" />
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                {{name}}
-              </v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action icon>
-              <v-btn icon light @click.native.stop="mini = !mini">
-                <v-icon light>chevron_left</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list-item>
-      </v-list>
-      <v-list>
-        <v-list-group v-for="item in items" :value="item.active" v-bind:key="item.title">
-          <v-list-tile slot="item" :ripple="!item.items" :router="!item.items" :to="item.to ? item.to : ''">
-            <v-list-tile-action icon light>
-              <v-icon icon light>{{ item.action }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action v-if="item.items">
-              <v-icon light>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-          <v-list-item v-for="subItem in item.items" v-bind:key="subItem.title">
-            <v-list-tile ripple>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-icon>{{ subItem.action }}</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-navigation-drawer>
     <v-toolbar class="indigo darken-4" light fixed>
-      <v-toolbar-side-icon v-if="$store.state.user.isAuthenticated" light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>{{name}}</v-toolbar-title>
       <v-menu bottom left>
         <v-btn icon="icon" slot="activator" light>
@@ -74,11 +20,6 @@
           <v-list-item>
             <v-list-tile ripple router to="/users/auth/sign-out" v-if="$store.state.user.isAuthenticated">
               <v-list-tile-title>Sign Out</v-list-tile-title>
-            </v-list-tile>
-          </v-list-item>
-          <v-list-item>
-            <v-list-tile ripple router to="/admin" v-if="$store.state.user.admin">
-              <v-list-tile-title>Admin</v-list-tile-title>
             </v-list-tile>
           </v-list-item>
         </v-list>
@@ -115,30 +56,7 @@
   export default {
     data () {
       return {
-        items: [
-          {
-            action: 'home',
-            title: 'Home',
-            to: '/'
-          },
-          {
-            action: 'settings',
-            title: 'Settings',
-            items: [
-              { title: 'Payment' },
-              { title: 'Account' },
-              { title: 'Privacy' }
-            ]
-          }
-        ],
-        name: 'meoup',
-        drawer: true,
-        mini: true,
-        right: null,
-        profilePath: this.$store.state.user.isAuthenticated ?
-          { name: 'users-username', params: { username: 'rlindskog' } } :
-          { path: '/' },
-        vueniverseLogo
+        name: 'MeoUp'
       }
     }
   }

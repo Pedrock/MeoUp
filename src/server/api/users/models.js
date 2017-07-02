@@ -1,17 +1,23 @@
 import mongoose from 'mongoose'
 import argon2 from 'argon2'
+import validator from 'validator'
 import { ServerError } from '~middleware/express-server-error'
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true,
     require: true,
-    minlength: 3
+    minlength: 3,
+    trim: true,
+    lowercase: true,
+    unique: true
   },
   email: {
     type: String,
+    trim: true,
+    lowercase: true,
     unique: true,
+    validate: [validator.isEmail, 'Invalid email address'],
     require: true
   },
   firstName: String,
@@ -25,7 +31,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     require: true
-  }
+  },
+  oauthToken: String,
+  oauthTokenSecret: String,
+  meocloudToken: String,
+  meocloudSecret: String
 }, {
   timestamps: true
 })

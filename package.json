@@ -40,15 +40,22 @@
     "mongoose": "^4.10.5",
     "npm-run-all": "^4.0.2",
     "nuxt": "^1.0.0-alpha.4",
+    "oauth-libre": "^0.9.15",
     "pm2": "^2.5.0",
+    "request": "^2.81.0",
+    "request-progress": "^3.0.0",
+    "request-promise-native": "^1.0.4",
     "slug": "^0.9.1",
+    "socket.io": "^2.0.3",
+    "socketio-jwt": "^4.5.0",
     "source-map-support": "^0.4.15",
     "speakeasy": "^2.0.0",
     "uuid": "^3.0.1",
     "validator": "^7.2.0",
     "vue-router": "^2.5.3",
     "vuetify": "^0.12.7",
-    "vuex": "^2.3.1"
+    "vuex": "^2.3.1",
+    "youtube-dl": "^1.11.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

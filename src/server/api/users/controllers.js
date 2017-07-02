@@ -5,17 +5,9 @@ import jwt from 'jsonwebtoken'
 import stripUser from '~util/stripUser'
 import randId from '~util/randId'
 import { ServerError } from '~middleware/express-server-error'
+import { MeoCloudOAuth } from '../../util/meocloud'
 
 export const index = {
-  async get (req, res) {
-    try {
-      let users = await User.find({})
-      if (!users) throw new ServerError('No users exist at this moment.', { status: 404 })
-      res.json(users)
-    } catch (error) {
-      res.handleServerError(error)
-    }
-  },
   async post (req, res) {
     try {
       let { username, email, firstName, lastName, password1, password2 } = req.body
@@ -26,61 +18,6 @@ export const index = {
         res.json({ message: `Thanks for signing up, ${savedUser.username}!` })
       } else {
         throw new ServerError('Passwords don\'t match.', { status: 400 })
-      }
-    } catch (error) {
-      res.handleServerError(error)
-    }
-  }
-}
-
-export const check = {
-  async get (req, res) {
-    try {
-      let authorizedQueries = ['username', 'email']
-      if (authorizedQueries.includes(req.query.check)) {
-        let check = req.query.check
-        let data = req.query.data
-        let user = await User.find({ [check]: data })
-        if (user.length) res.json({ exists: true })
-        else res.json({ exists: false })
-      } else {
-        throw new ServerError('Query not supported.', { status: 400 })
-      }
-    } catch (error) {
-      res.handleServerError(error)
-    }
-  }
-}
-
-export const username = {
-  async get (req, res) {
-    try {
-      // check if the logged in user has the same username as the requested user.
-      if (req.user.username === req.params.username) {
-        res.json(req.user)
-      } else {
-        let fetchedUser = await User.findOne({ username: req.params.username })
-        if (!fetchedUser) throw new ServerError(`User with username '${req.params.username}' doesn't exist.`, { status: 404 })
-        res.json({
-          username: fetchedUser.username,
-          message: `Authentication by ${req.params.fetchedUser.username} required to view more...`
-        })
-      }
-    } catch (error) {
-      res.handleServerError(error)
-    }
-  },
-  async post (req, res) {
-    res.json({ message: 'Update the user, and return the updated user.' })
-  },
-  async delete (req, res) {
-    try {
-      if (req.user.username === req.params.username) {
-        let deleted = await User.findOneAndRemove({ username: req.user.username })
-        if (!deleted) throw new ServerError(`User with username '${req.params.username}' doesn't exist.`, { status: 404 })
-        res.json({ message: 'Successfully deleted user.' })
-      } else {
-        throw new ServerError('Unauthorized.', { status: 401 })
       }
     } catch (error) {
       res.handleServerError(error)
@@ -115,6 +52,44 @@ export const signOut = {
     try {
       blacklist.revoke(req.user)
       res.json({ message: 'Sign out successful. Good bye! :)' })
+    } catch (error) {
+      res.handleServerError(error)
+    }
+  }
+}
+
+export const oauth = {
+  async get (req, res) {
+    try {
+      const oauth = new MeoCloudOAuth()
+      oauth.getOAuthRequestToken(async (error, oauthToken, oauthTokenSecret) => {
+        if (error) {
+          throw error
+        } else {
+          await User.findByIdAndUpdate(req.user.id, { oauthToken, oauthTokenSecret })
+          res.json({ authorizeURL: `https://meocloud.pt/oauth/authorize?oauth_token=${oauthToken}` })
+        }
+      })
+    } catch (error) {
+      res.handleServerError(error)
+    }
+  },
+  async post (req, res) {
+    try {
+      const oauth = new MeoCloudOAuth()
+      const user = await User.findById(req.user.id)
+      const { oauthToken, oauthTokenSecret } = user
+      oauth.getOAuthAccessToken(oauthToken, oauthTokenSecret, req.body.pin, (error, meocloudToken, meocloudSecret) => {
+        if (error) {
+          res.handleServerError(error)
+        } else {
+          user.oauthToken = user.oauthTokenSecret = undefined
+          user.meocloudToken = meocloudToken
+          user.meocloudSecret = meocloudSecret
+          user.save()
+          res.end()
+        }
+      })
     } catch (error) {
       res.handleServerError(error)
     }
