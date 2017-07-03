@@ -154,5 +154,13 @@ export const index = {
     if (req.body.url) fileDownloadRequest(req, res)
     else if (req.body.youtube) youtubeDownloadRequest(req, res)
     else res.handleServerError(new ServerError('Invalid Request', { status: 400 }))
+  },
+  async delete (req, res) {
+    try {
+      await Download.findOneAndRemove({_id: req.params.id, _user: req.user.id})
+      res.end()
+    } catch (error) {
+      res.handleServerError(error)
+    }
   }
 }

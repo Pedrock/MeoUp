@@ -34,7 +34,8 @@ module.exports = {
   },
   modules: [
     '@nuxtjs/pwa',
-    '@nuxtjs/component-cache'
+    '@nuxtjs/component-cache',
+    '@nuxtjs/font-awesome'
   ],
   plugins: ['~plugins/vuetify.js'],
   render: {

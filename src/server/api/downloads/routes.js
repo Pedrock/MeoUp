@@ -18,9 +18,10 @@ function tokenMiddleware (req, res, next) {
   })
 }
 
-router.route('/')
-  .all(authenticate())
-  .get(index.get)
-  .post(tokenMiddleware, index.post)
+router.use(authenticate())
+
+router.get('/', index.get)
+router.post('/', tokenMiddleware, index.post)
+router.delete('/:id', index.delete)
 
 export default router

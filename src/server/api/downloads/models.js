@@ -33,6 +33,15 @@ const downloadSchema = new mongoose.Schema({
   timestamps: true
 })
 
+downloadSchema.set('toJSON', {
+  transform: (doc, ret, options) => {
+    delete ret.__v
+    ret.id = ret._id.toString()
+    delete ret._id
+    return ret
+  }
+})
+
 const Download = mongoose.model('Download', downloadSchema)
 
 export default Download

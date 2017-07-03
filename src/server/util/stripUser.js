@@ -1,8 +1,5 @@
-export default function stripUser (user, fields = ['password', 'createdAt', 'updatedAt', '_id', '__v']) {
-  let newUser = user.toObject()
-  newUser.id = user.id
-  fields.forEach(field => {
-    delete newUser[field]
-  })
-  return newUser
+import _ from 'lodash'
+
+export default function stripUser (user) {
+  return _.pick(user.toObject(), ['id', 'username', 'email', 'firstName', 'lastName', 'admin'])
 }
