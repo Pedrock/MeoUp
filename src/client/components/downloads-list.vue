@@ -109,6 +109,15 @@
     }
   }
 
+  .download-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 60px);
+    display: block;
+    margin: 0;
+  }
+
   .spinner {
     font-size: 1.5em
     margin-left: 4.2px;

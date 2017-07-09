@@ -118,7 +118,7 @@ function fileDownloadRequest (req, res) {
 }
 
 function youtubeDownloadRequest (req, res) {
-  return new Promise((resolve, reject) => {
+  new Promise((resolve, reject) => {
     try {
       const url = req.body.youtube
       const args = ['--no-cache-dir']
@@ -139,6 +139,8 @@ function youtubeDownloadRequest (req, res) {
     } catch (error) {
       reject(error)
     }
+  }).catch((error) => {
+    res.handleServerError(error)
   })
 }
 
