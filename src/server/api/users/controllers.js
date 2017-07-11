@@ -64,7 +64,7 @@ export const oauth = {
       const oauth = new MeoCloudOAuth();
       oauth.getOAuthRequestToken(async (error, oauthToken, oauthTokenSecret) => {
         if (error) {
-          throw error;
+          return res.handleServerError(error);
         } else {
           await User.findByIdAndUpdate(req.user.id, { oauthToken, oauthTokenSecret });
           res.json({ authorizeURL: `https://meocloud.pt/oauth/authorize?oauth_token=${oauthToken}` });
@@ -92,6 +92,13 @@ export const oauth = {
       });
     } catch (error) {
       res.handleServerError(error);
+    }
+  },
+  check: {
+    async get (req, res) {
+      const user = await User.findById(req.user.id);
+      const { meocloudToken, meocloudSecret } = user;
+      res.json(meocloudToken && meocloudSecret);
     }
   }
 };

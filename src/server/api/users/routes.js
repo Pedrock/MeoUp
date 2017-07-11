@@ -14,4 +14,6 @@ router.route('/oauth')
   .get(oauth.get)
   .post(oauth.post);
 
+router.get('/oauth/check', authenticate(), oauth.check.get);
+
 export default router;

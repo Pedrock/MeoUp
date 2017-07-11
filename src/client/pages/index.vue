@@ -45,6 +45,7 @@ import DownloadsList from '../components/downloads-list.vue';
 import { mapMutations } from 'vuex';
 
 export default {
+  middleware: 'index-oauthed',
   beforeMount () {
     socket.on('connect', () => {
       console.log('connected');
@@ -106,7 +107,7 @@ export default {
         let {data: downloads} = await axios.get(`/downloads`);
         return { downloads };
       } catch (error) {
-        this.notifyFailure({ message: 'Download fetch failed' });
+        store.commit('notification/FAILURE', { message: 'Download fetch failed' });
       }
     }
   },
