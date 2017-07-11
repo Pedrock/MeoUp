@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-const { ObjectId } = mongoose.Schema.Types
+import mongoose from 'mongoose';
+const { ObjectId } = mongoose.Schema.Types;
 
 const downloadSchema = new mongoose.Schema({
   _user: {
@@ -31,17 +31,17 @@ const downloadSchema = new mongoose.Schema({
   shareUrl: String
 }, {
   timestamps: true
-})
+});
 
 downloadSchema.set('toJSON', {
   transform: (doc, ret, options) => {
-    delete ret.__v
-    ret.id = ret._id.toString()
-    delete ret._id
-    return ret
+    delete ret.__v;
+    ret.id = ret._id.toString();
+    delete ret._id;
+    return ret;
   }
-})
+});
 
-const Download = mongoose.model('Download', downloadSchema)
+const Download = mongoose.model('Download', downloadSchema);
 
-export default Download
+export default Download;

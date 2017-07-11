@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
-import argon2 from 'argon2'
-import validator from 'validator'
-import { ServerError } from '~middleware/express-server-error'
+import mongoose from 'mongoose';
+import argon2 from 'argon2';
+import validator from 'validator';
+import { ServerError } from '~middleware/express-server-error';
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -38,30 +38,30 @@ const userSchema = new mongoose.Schema({
   meocloudSecret: String
 }, {
   timestamps: true
-})
+});
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 
 userSchema.pre('save', async function (callback) {
-  if (!this.isModified('password')) return callback()
-  this.password = await argon2.hash(this.password)
-  callback()
-})
+  if (!this.isModified('password')) return callback();
+  this.password = await argon2.hash(this.password);
+  callback();
+});
 
 userSchema.post('save', function (error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
-    next(new ServerError('User taken.', { status: 409, log: false }))
+    next(new ServerError('User taken.', { status: 409, log: false }));
   }
-})
+});
 
 // don't ever return password on creation.
 userSchema.set('toJSON', {
   transform (doc, ret, options) {
-    delete ret.__v
-    ret.id = ret._id.toString()
-    delete ret.password
-    return ret
+    delete ret.__v;
+    ret.id = ret._id.toString();
+    delete ret.password;
+    return ret;
   }
-})
+});
 
-export default User
+export default User;

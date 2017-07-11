@@ -28,61 +28,81 @@
 </template>
 
 <script>
-  import axios from '../plugins/axios'
-  import { mapMutations } from 'vuex'
+  import socket from '../plugins/socket.io.js';
+  import axios from '../plugins/axios';
+  import { mapMutations } from 'vuex';
 
   export default {
     name: 'downloads-list',
     props: ['downloads'],
-    data() {
+    data () {
       return {
         myDownloads: this.downloads,
         deleted: {}
-      }
+      };
+    },
+    beforeMount () {
+      socket.on('progress', (downloadId, downloaded, downloadSize) => {
+        const download = this.myDownloads.find(download => download.id === downloadId);
+        if (download) {
+          download.downloaded = downloaded;
+          download.downloadSize = downloadSize;
+        }
+      })
+      .on('download', updatedDownload => {
+        const foundDownload = this.myDownloads.find(download => download.id === updatedDownload.id);
+        if (foundDownload) {
+          Object.assign(foundDownload, updatedDownload);
+        } else {
+          this.myDownloads.push(updatedDownload);
+        }
+      });
+    },
+    beforeDestroy () {
+      socket.off('progress');
     },
     computed: {
-      cDownloads() {
-        const getDownloadUrl = shareUrl => shareUrl.replace(/\/$/, '').replace('//meocloud.pt/link/', '//cld.pt/dl/download/') + '?download=true'
-        const getPercentage = download => (Math.floor(download.downloaded / download.downloadSize * 10000) / 100)
+      cDownloads () {
+        const getDownloadUrl = shareUrl => shareUrl.replace(/\/$/, '').replace('//meocloud.pt/link/', '//cld.pt/dl/download/') + '?download=true';
+        const getPercentage = download => (Math.floor(download.downloaded / download.downloadSize * 10000) / 100);
 
         const getProgress = download => {
-          if (download.status === 'error') return {progress: 100, progressText: 'Failed'}
-          else if (download.status === 'finished') return {progress: 100, progressText: '100 %'}
+          if (download.status === 'error') return {progress: 100, progressText: 'Failed'};
+          else if (download.status === 'finished') return {progress: 100, progressText: '100 %'};
           else if (download.downloadSize) {
-            const progress = getPercentage(download)
-            return {progress, progressText: `${progress} %`}
-          }
-          else if (download.downloaded) return {progress: null, progressText: 'N/A'}
-          else return {progress: 0, progressText: '0 %'}
-        }
+            const progress = getPercentage(download);
+            return {progress, progressText: `${progress} %`};
+          } else if (download.downloaded) return {progress: null, progressText: 'N/A'};
+          else return {progress: 0, progressText: '0 %'};
+        };
 
         return this.myDownloads.map(download => {
           return {
             ...download,
             downloadUrl: download.shareUrl ? getDownloadUrl(download.shareUrl) : null,
             ...getProgress(download)
-          }
-        })
+          };
+        });
       }
     },
     methods: {
       ...mapMutations({
         notifyError: 'notification/FAILURE'
       }),
-      async deleteDownload(id) {
+      async deleteDownload (id) {
         if (this.deleted[id]) return;
         this.$set(this.deleted, id, true);
-        console.log(`Delete ${id}`)
+        console.log(`Delete ${id}`);
         try {
-          await axios.delete(`/downloads/${id}`)
-          this.myDownloads = this.myDownloads.filter(d => d.id !== id)
+          await axios.delete(`/downloads/${id}`);
+          this.myDownloads = this.myDownloads.filter(d => d.id !== id);
         } catch (error) {
-          this.notifyError({ message: 'It was not possible to delete this download.' })
+          this.notifyError({ message: 'It was not possible to delete this download.' });
           this.$delete(this.deleted, id);
         }
       }
     }
-  }
+  };
 </script>
 
 <style scoped lang="stylus">

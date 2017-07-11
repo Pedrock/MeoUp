@@ -17,7 +17,7 @@
                     <span class="headline">{{ type === 'file' ? 'File Download' : 'Youtube Download' }}</span>
                   </v-card-title>
                   <v-card-text v-if="showForm">
-                    <v-text-field label="URL" type="url" required v-model="url"></v-text-field>
+                    <v-text-field v-focus label="URL" type="url" required v-model="url"></v-text-field>
                   </v-card-text>
                   <v-card-actions>
                     <v-btn class="green--text darken-1" flat="flat" @click.native="dialog = false" :disabled="loading">Cancel</v-btn>
@@ -39,26 +39,40 @@
 </template>
 
 <script>
-import axios from '../plugins/axios'
-import DownloadsList from '../components/downloads-list.vue'
-import { mapMutations } from 'vuex'
+import socket from '../plugins/socket.io.js';
+import axios from '../plugins/axios';
+import DownloadsList from '../components/downloads-list.vue';
+import { mapMutations } from 'vuex';
 
 export default {
-  data() {
+  beforeMount () {
+    socket.on('connect', () => {
+      console.log('connected');
+      socket.emit('authenticate', {token: this.$store.state.user.token})
+        .on('authenticated', () => {
+          console.log('authenticated');
+        })
+        .on('unauthorized', (msg) => {
+          console.log('unauthorized: ' + JSON.stringify(msg.data));
+          throw new Error(msg.data.type);
+        });
+    });
+  },
+  data () {
     return {
       dialog: false,
       showForm: true,
       url: '',
       type: 'youtube',
       loading: false
-    }
+    };
   },
   methods: {
     ...mapMutations({
       notifyFailure: 'notification/FAILURE',
       notifySuccess: 'notification/SUCCESS'
     }),
-    openDialog(type) {
+    openDialog (type) {
       this.type = type;
       this.url = '';
       this.dialog = true;
@@ -67,12 +81,12 @@ export default {
       this.showForm = false;
       this.$nextTick(() => {
         this.showForm = true;
-      })
+      });
     },
-    download() {
+    download () {
       this.loading = true;
       axios.post(`/downloads`, {
-        [this.type === 'file' ? 'url' : 'youtube'] : this.url
+        [this.type === 'file' ? 'url' : 'youtube']: this.url
       })
       .then(({ data: message }) => {
         this.notifySuccess({ message });
@@ -84,21 +98,33 @@ export default {
       .then(() => {
         this.loading = false;
       });
-    },
+    }
   },
-  async asyncData({ store }) {
+  async asyncData ({ store }) {
     if (store.state.user.isAuthenticated) {
-      let { data:downloads } = await axios.get(`/downloads`).catch(console.error)
-      return { downloads }
+      try {
+        let {data: downloads} = await axios.get(`/downloads`);
+        return { downloads };
+      } catch (error) {
+        this.notifyFailure({ message: 'Download fetch failed' });
+      }
     }
   },
   components: {DownloadsList},
-}
+  directives: {
+    focus: {
+      inserted: function (el) {
+        const input = el.getElementsByTagName('input')[0];
+        (input || el).focus();
+      }
+    }
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
   #main-container {
-    padding: 0;
+    padding: 0
     & > .layout {
 
     }

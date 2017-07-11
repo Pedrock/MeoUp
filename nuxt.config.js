@@ -1,9 +1,9 @@
-const path = require('path')
+const path = require('path');
 
 require('dotenv').config({
   silent: true,
   path: process.env.NODE_ENV === 'production' ? '.prod.env' : '.dev.env'
-})
+});
 
 module.exports = {
   build: {
@@ -43,7 +43,7 @@ module.exports = {
       maxAge: '1y',
       setHeaders (res, path) {
         if (path.includes('sw.js')) {
-          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.setHeader('Cache-Control', 'public, max-age=0');
         }
       }
     }
@@ -52,4 +52,4 @@ module.exports = {
     middleware: ['ssr-cookie', 'https']
   },
   srcDir: path.resolve(__dirname, 'src', 'client')
-}
+};

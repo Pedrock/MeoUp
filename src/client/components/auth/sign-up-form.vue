@@ -61,10 +61,10 @@
 </template>
 
 <script>
-import axios from '~plugins/axios'
-import isEmail from 'validator/lib/isEmail'
-let usernameTimeout = null
-let emailTimeout = null
+import axios from '~plugins/axios';
+import isEmail from 'validator/lib/isEmail';
+let usernameTimeout = null;
+let emailTimeout = null;
 
 export default {
   props: ['redirect'],
@@ -79,55 +79,55 @@ export default {
       pw1: true,
       pw2: true,
       usernameExistsData: false,
-      emailExistsData: false,
-    }
+      emailExistsData: false
+    };
   },
   computed: {
-    passwordsMatch() {
-      return this.password1 === this.password2 ? '' : 'Passwords don\'t match'
+    passwordsMatch () {
+      return this.password1 === this.password2 ? '' : 'Passwords don\'t match';
     },
-    usernameExists() {
-      return this.usernameExistsData ? 'Username already exists.' : ''
+    usernameExists () {
+      return this.usernameExistsData ? 'Username already exists.' : '';
     },
-    emailExists() {
-      return this.emailExistsData ? 'User with that email already exists.' : ''
+    emailExists () {
+      return this.emailExistsData ? 'User with that email already exists.' : '';
     },
-    isEmail() {
-      return !isEmail(this.email) && this.email.length ? 'Must be a valid email' : ''
+    isEmail () {
+      return !isEmail(this.email) && this.email.length ? 'Must be a valid email' : '';
     }
   },
   methods: {
     checkUsername (e) {
-      clearTimeout(usernameTimeout)
+      clearTimeout(usernameTimeout);
       usernameTimeout = setTimeout(() => {
-        let username = e.target.value
+        let username = e.target.value;
         axios.get(`/users/check`, {
           params: {
             check: 'username',
             data: username
           }
         }).then(data => {
-          this.usernameExistsData = data.data.exists
+          this.usernameExistsData = data.data.exists;
         }).catch(error => {
-          console.error(error)
-        })
-      }, 500)
+          console.error(error);
+        });
+      }, 500);
     },
     checkEmail (e) {
-      clearTimeout(emailTimeout)
+      clearTimeout(emailTimeout);
       emailTimeout = setTimeout(() => {
-        let email = e.target.value
+        let email = e.target.value;
         axios.get(`/users/check`, {
           params: {
             check: 'email',
             data: email
           }
         }).then(data => {
-          this.emailExistsData = data.data.exists
+          this.emailExistsData = data.data.exists;
         }).catch(error => {
-          console.error(error)
-        })
-      }, 500)
+          console.error(error);
+        });
+      }, 500);
     },
     submit () {
       this.$store.dispatch('user/signUp', {
@@ -138,9 +138,9 @@ export default {
         password1: this.password1,
         password2: this.password2
       }).then(() => {
-        if (this.$store.state.notification.success) this.$router.replace(this.redirect)
-      })
+        if (this.$store.state.notification.success) this.$router.replace(this.redirect);
+      });
     }
   }
-}
+};
 </script>

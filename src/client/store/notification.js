@@ -8,28 +8,28 @@ export const state = () => {
     context: 'info',
     text: '',
     snackbar: false
-  }
-}
+  };
+};
 export const mutations = {
   // what, start
   PENDING (state) {
-    state.mode = 'info'
-    state.pending = true
+    state.mode = 'info';
+    state.pending = true;
   },
   SUCCESS (state, data) {
-    state.failure = false
-    state.context = 'success'
-    state.success = true
-    state.text = data.message
-    state.snackbar = true
-    state.pending = false
+    state.failure = false;
+    state.context = 'success';
+    state.success = true;
+    state.text = data.message;
+    state.snackbar = true;
+    state.pending = false;
   },
   FAILURE (state, data) {
-    state.success = false
-    state.context = 'error'
-    state.failure = true
-    state.text = data.message
-    state.snackbar = true
-    state.pending = false
+    state.success = false;
+    state.context = 'error';
+    state.failure = true;
+    state.text = data.message;
+    state.snackbar = true;
+    state.pending = false;
   }
-}
+};

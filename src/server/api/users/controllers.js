@@ -1,97 +1,97 @@
-import argon2 from 'argon2'
-import blacklist from 'express-jwt-blacklist'
-import User from './models'
-import jwt from 'jsonwebtoken'
-import stripUser from '~util/stripUser'
-import randId from '~util/randId'
-import { ServerError } from '~middleware/express-server-error'
-import { MeoCloudOAuth } from '../../util/meocloud'
+import argon2 from 'argon2';
+import blacklist from 'express-jwt-blacklist';
+import User from './models';
+import jwt from 'jsonwebtoken';
+import stripUser from '~util/stripUser';
+import randId from '~util/randId';
+import { ServerError } from '~middleware/express-server-error';
+import { MeoCloudOAuth } from '../../util/meocloud';
 
 export const index = {
   async post (req, res) {
     try {
-      let { username, email, firstName, lastName, password1, password2 } = req.body
+      let { username, email, firstName, lastName, password1, password2 } = req.body;
       if (password1 === password2) {
-        let password = await argon2.hash(password1)
-        let newUser = new User({ username, email, firstName, lastName, password })
-        let savedUser = await newUser.save()
-        res.json({ message: `Thanks for signing up, ${savedUser.username}!` })
+        let password = await argon2.hash(password1);
+        let newUser = new User({ username, email, firstName, lastName, password });
+        let savedUser = await newUser.save();
+        res.json({ message: `Thanks for signing up, ${savedUser.username}!` });
       } else {
-        throw new ServerError('Passwords don\'t match.', { status: 400 })
+        throw new ServerError('Passwords don\'t match.', { status: 400 });
       }
     } catch (error) {
-      res.handleServerError(error)
+      res.handleServerError(error);
     }
   }
-}
+};
 
 // separate into auth app if need be. 'sign-up' is handled as a POST request to '/users'
 export const signIn = {
   async post (req, res) {
     try {
-      let { username, password } = req.body
-      let user = await User.findOne({ username })
-      if (!user) throw new ServerError('Authentication failed. Incorrect username or password', { status: 401, log: false })
-      let passwordHash = user.password
-      let matched = await argon2.verify(passwordHash, password)
+      let { username, password } = req.body;
+      let user = await User.findOne({ username });
+      if (!user) throw new ServerError('Authentication failed. Incorrect username or password', { status: 401, log: false });
+      let passwordHash = user.password;
+      let matched = await argon2.verify(passwordHash, password);
       if (!user || !matched || !username || !password) {
-        throw new ServerError('Authentication failed. Incorrect username or password', { status: 401, log: false })
+        throw new ServerError('Authentication failed. Incorrect username or password', { status: 401, log: false });
       } else {
-        user = stripUser(user)
-        let token = jwt.sign(user, process.env.SECRET, { expiresIn: '30 days', jwtid: randId() })
-        res.status(200).json({ message: `Welcome, ${user.username}!`, token, user })
+        user = stripUser(user);
+        let token = jwt.sign(user, process.env.SECRET, { expiresIn: '30 days', jwtid: randId() });
+        res.status(200).json({ message: `Welcome, ${user.username}!`, token, user });
       }
     } catch (error) {
-      res.handleServerError(error)
+      res.handleServerError(error);
     }
   }
-}
+};
 
 export const signOut = {
   async post (req, res) {
     try {
-      blacklist.revoke(req.user)
-      res.json({ message: 'Sign out successful. Good bye! :)' })
+      blacklist.revoke(req.user);
+      res.json({ message: 'Sign out successful. Good bye! :)' });
     } catch (error) {
-      res.handleServerError(error)
+      res.handleServerError(error);
     }
   }
-}
+};
 
 export const oauth = {
   async get (req, res) {
     try {
-      const oauth = new MeoCloudOAuth()
+      const oauth = new MeoCloudOAuth();
       oauth.getOAuthRequestToken(async (error, oauthToken, oauthTokenSecret) => {
         if (error) {
-          throw error
+          throw error;
         } else {
-          await User.findByIdAndUpdate(req.user.id, { oauthToken, oauthTokenSecret })
-          res.json({ authorizeURL: `https://meocloud.pt/oauth/authorize?oauth_token=${oauthToken}` })
+          await User.findByIdAndUpdate(req.user.id, { oauthToken, oauthTokenSecret });
+          res.json({ authorizeURL: `https://meocloud.pt/oauth/authorize?oauth_token=${oauthToken}` });
         }
-      })
+      });
     } catch (error) {
-      res.handleServerError(error)
+      res.handleServerError(error);
     }
   },
   async post (req, res) {
     try {
-      const oauth = new MeoCloudOAuth()
-      const user = await User.findById(req.user.id)
-      const { oauthToken, oauthTokenSecret } = user
+      const oauth = new MeoCloudOAuth();
+      const user = await User.findById(req.user.id);
+      const { oauthToken, oauthTokenSecret } = user;
       oauth.getOAuthAccessToken(oauthToken, oauthTokenSecret, req.body.pin, (error, meocloudToken, meocloudSecret) => {
         if (error) {
-          res.handleServerError(error)
+          res.handleServerError(error);
         } else {
-          user.oauthToken = user.oauthTokenSecret = undefined
-          user.meocloudToken = meocloudToken
-          user.meocloudSecret = meocloudSecret
-          user.save()
-          res.end()
+          user.oauthToken = user.oauthTokenSecret = undefined;
+          user.meocloudToken = meocloudToken;
+          user.meocloudSecret = meocloudSecret;
+          user.save();
+          res.end();
         }
-      })
+      });
     } catch (error) {
-      res.handleServerError(error)
+      res.handleServerError(error);
     }
   }
-}
+};

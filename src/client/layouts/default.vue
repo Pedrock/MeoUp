@@ -50,14 +50,11 @@
 </template>
 
 <script>
-  // search icons: https://material.io/icons/
-  import vueniverseLogo from '~assets/img/vueniverse_logo.svg'
-
   export default {
     data () {
       return {
         name: 'MeoUp'
-      }
+      };
     }
-  }
+  };
 </script>
