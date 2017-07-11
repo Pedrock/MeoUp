@@ -49,13 +49,13 @@ export default {
     socket.on('connect', () => {
       console.log('connected');
       socket.emit('authenticate', {token: this.$store.state.user.token})
-        .on('authenticated', () => {
-          console.log('authenticated');
-        })
-        .on('unauthorized', (msg) => {
-          console.log('unauthorized: ' + JSON.stringify(msg.data));
-          throw new Error(msg.data.type);
-        });
+    })
+    .on('authenticated', () => {
+      console.log('authenticated');
+    })
+    .on('unauthorized', (msg) => {
+      console.log('unauthorized: ' + JSON.stringify(msg.data));
+      throw new Error(msg.data.type);
     });
   },
   data () {

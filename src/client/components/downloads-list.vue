@@ -4,14 +4,13 @@
       <div v-for="download in cDownloads" class="download"
            :key="download.id"
            :class="{finished: download.status === 'finished'}">
-        <div class="download-side-icons" style="float: right">
-          <a class="download-icon" :href="download.downloadUrl" :title="download.url">
+        <div class="download-side-icons">
+          <a class="download-icon" :href="download.downloadUrl">
             <span class="fa-stack fa">
               <i class="fa fa-circle fa-stack-2x"></i>
               <i class="fa fa-cloud-download fa-stack-1x fa-inverse"></i>
             </span>
           </a>
-          <!--<i v-if="deleted[download.id]" class="spinner fa fa-spinner fa-spin"></i>-->
           <v-progress-circular v-if="deleted[download.id]" indeterminate v-bind:width="3" :size="25" class="spinner"></v-progress-circular>
           <a v-else class="delete-icon" href="#" @click.prevent="deleteDownload(download.id)">
             <i class="fa fa-trash fa-lg"></i>
@@ -127,6 +126,10 @@
     .fa {
       font-size: 1.75em;
     }
+  }
+
+  .download-side-icons {
+    float: right;
   }
 
   .download-link {
