@@ -41,6 +41,27 @@
       };
     },
     beforeMount () {
+      socket.on('connect', () => {
+        console.log('connected');
+        socket.emit('authenticate', {token: this.$store.state.user.token})
+      })
+      .on('authenticated', () => {
+        console.log('authenticated');
+      })
+      .on('unauthorized', (msg) => {
+        console.log('unauthorized: ' + JSON.stringify(msg.data));
+        throw new Error(msg.data.type);
+      })
+      .on('reconnect', async () => {
+        console.log('reconnected');
+        try {
+          let {data: downloads} = await axios.get(`/downloads`);
+          this.myDownloads = downloads;
+        } catch (error) {
+          store.commit('notification/FAILURE', { message: 'Downloads fetch failed' });
+        }
+      })
+
       socket.on('progress', (downloadId, downloaded, downloadSize) => {
         const download = this.myDownloads.find(download => download.id === downloadId);
         if (download) {
@@ -55,7 +76,13 @@
         } else {
           this.myDownloads.push(updatedDownload);
         }
-      });
+      })
+      .on('delete', deletedId => {
+        const index = this.myDownloads.findIndex(download => download.id === deletedId);
+        if (index >= 0) {
+          this.myDownloads.splice(index, 1);
+        }
+      })
     },
     beforeDestroy () {
       socket.off('progress');

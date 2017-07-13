@@ -54,11 +54,9 @@ userSchema.post('save', function (error, doc, next) {
   }
 });
 
-// don't ever return password on creation.
-userSchema.set('toJSON', {
+userSchema.set('toObject', { getters: true,
   transform (doc, ret, options) {
     delete ret.__v;
-    ret.id = ret._id.toString();
     delete ret.password;
     return ret;
   }

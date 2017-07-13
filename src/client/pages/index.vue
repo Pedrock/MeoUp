@@ -39,26 +39,12 @@
 </template>
 
 <script>
-import socket from '../plugins/socket.io.js';
 import axios from '../plugins/axios';
 import DownloadsList from '../components/downloads-list.vue';
 import { mapMutations } from 'vuex';
 
 export default {
   middleware: 'index-oauthed',
-  beforeMount () {
-    socket.on('connect', () => {
-      console.log('connected');
-      socket.emit('authenticate', {token: this.$store.state.user.token})
-    })
-    .on('authenticated', () => {
-      console.log('authenticated');
-    })
-    .on('unauthorized', (msg) => {
-      console.log('unauthorized: ' + JSON.stringify(msg.data));
-      throw new Error(msg.data.type);
-    });
-  },
   data () {
     return {
       dialog: false,
@@ -107,7 +93,7 @@ export default {
         let {data: downloads} = await axios.get(`/downloads`);
         return { downloads };
       } catch (error) {
-        store.commit('notification/FAILURE', { message: 'Download fetch failed' });
+        store.commit('notification/FAILURE', { message: 'Downloads fetch failed' });
       }
     }
   },
