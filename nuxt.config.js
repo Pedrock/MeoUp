@@ -37,7 +37,10 @@ module.exports = {
     '@nuxtjs/component-cache',
     '@nuxtjs/font-awesome'
   ],
-  plugins: ['~plugins/vuetify.js'],
+  plugins: [
+    '~plugins/vuetify.js',
+    { src: '~plugins/socket.io', ssr: false }
+  ],
   render: {
     static: {
       maxAge: '1y',

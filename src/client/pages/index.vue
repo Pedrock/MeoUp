@@ -1,11 +1,13 @@
 <template>
-  <v-container fluid id="main-container">
+  <v-container fluid class="main-container">
     <v-layout justify-center align-center>
       <v-flex xs12 sm10 md8 lg6 xl6>
         <v-container v-if="$store.state.user.isAuthenticated">
 
-          <v-btn primary light slot="activator" @click.native.stop="openDialog('file')">File Download</v-btn>
-          <v-btn primary light slot="activator" @click.native.stop="openDialog('youtube')">Youtube Download</v-btn>
+          <v-container class="btns-container">
+            <v-btn primary dark slot="activator" @click.native.stop="openDialog('file')">File Download</v-btn>
+            <v-btn primary dark slot="activator" @click.native.stop="openDialog('youtube')">Youtube Download</v-btn>
+          </v-container>
 
           <downloads-list :downloads="downloads"></downloads-list>
 
@@ -110,10 +112,15 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  #main-container {
-    padding: 0
-    & > .layout {
-
+  .main-container {
+    padding: 0;
+  }
+  .btns-container {
+    padding: 0;
+    text-align: center;
+    padding-bottom: 20px;
+    button {
+      min-width: 180px;
     }
   }
 </style>

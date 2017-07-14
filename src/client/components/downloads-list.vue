@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import socket from '../plugins/socket.io.js';
+  import { socket } from '../plugins/socket.io.js';
   import axios from '../plugins/axios';
   import { mapMutations } from 'vuex';
 
@@ -41,17 +41,7 @@
       };
     },
     beforeMount () {
-      socket.on('connect', () => {
-        console.log('connected');
-        socket.emit('authenticate', {token: this.$store.state.user.token})
-      })
-      .on('authenticated', () => {
-        console.log('authenticated');
-      })
-      .on('unauthorized', (msg) => {
-        console.log('unauthorized: ' + JSON.stringify(msg.data));
-        throw new Error(msg.data.type);
-      })
+      socket
       .on('reconnect', async () => {
         console.log('reconnected');
         try {
@@ -61,8 +51,7 @@
           store.commit('notification/FAILURE', { message: 'Downloads fetch failed' });
         }
       })
-
-      socket.on('progress', (downloadId, downloaded, downloadSize) => {
+      .on('progress', (downloadId, downloaded, downloadSize) => {
         const download = this.myDownloads.find(download => download.id === downloadId);
         if (download) {
           download.downloaded = downloaded;
@@ -85,7 +74,7 @@
       })
     },
     beforeDestroy () {
-      socket.off('progress');
+      socket.off('reconnect').off('progress').off('download').off('delete');
     },
     computed: {
       cDownloads () {
@@ -132,6 +121,7 @@
 </script>
 
 <style scoped lang="stylus">
+
   .download {
     &:not(.finished) .download-icon {
       color: gray;
