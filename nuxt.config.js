@@ -21,16 +21,13 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Nuxt.js project' }
-    ],
-    link: [
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }
+      { hid: 'description', name: 'description', content: 'Transfer files and Youtube videos from a URL directly to MeoCloud!' }
     ]
   },
   manifest: {
     name: 'meoup',
-    description: 'Website which allows users to transfer files and youtube videos from a URL to a MeoCloud account.',
-    theme_color: '#188269'
+    description: 'Transfer files and Youtube videos from a URL directly to MeoCloud!',
+    theme_color: '#007aff'
   },
   modules: [
     '@nuxtjs/pwa',
