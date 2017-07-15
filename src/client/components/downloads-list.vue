@@ -48,7 +48,7 @@
           let {data: downloads} = await axios.get(`/downloads`);
           this.myDownloads = downloads;
         } catch (error) {
-          store.commit('notification/FAILURE', { message: 'Downloads fetch failed' });
+          this.$store.commit('notification/FAILURE', { message: 'Downloads fetch failed' });
         }
       })
       .on('progress', (downloadId, downloaded, downloadSize) => {
@@ -71,7 +71,7 @@
         if (index >= 0) {
           this.myDownloads.splice(index, 1);
         }
-      })
+      });
     },
     beforeDestroy () {
       socket.off('reconnect').off('progress').off('download').off('delete');
