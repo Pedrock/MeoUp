@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons')
+
+// Specify overrides (theme and/or base variables etc.)
+// See https://vuetifyjs.com/quick-start
+$theme := {
+  primary: #007bf6
+  accent: #598be6
+  secondary: #424242
+  info: #0D47A1
+  warning: #ffb300
+  error: #B71C1C
+  success: #2E7D32
+}
+
+// Import Vuetify styling
+@require '~vuetify/src/stylus/main.styl'
+
+// Main transition effect.
+.page-enter-active, .page-leave-active {
+  transition: opacity .25s
+}
+.page-enter, .page-leave-active {
+  opacity: 0
+}
+
+// Paginate transition effect.
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  transform: translate(30px, 0);
+}
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  transform: translate(-30px, 0);
+}
