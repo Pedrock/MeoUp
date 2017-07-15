@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import { mapMutations } from 'vuex'
+  import { mapMutations } from 'vuex';
   import axios from '../plugins/axios';
 
   export default {
