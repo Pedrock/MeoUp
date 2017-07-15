@@ -1,11 +1,12 @@
 import io from 'socket.io-client';
 
-export const socket = io(`http://${process.env.HOST}:${process.env.PORT}/`, {
+const url = (process.BROWSER_BUILD && window.location.href) || `http://${process.env.HOST}:${process.env.PORT}/`;
+
+export const socket = io(url, {
   autoConnect: false
 });
 
 export default ({ store }) => {
-
   if (store.state.user.isAuthenticated) {
     socket.open();
   }

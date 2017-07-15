@@ -52,7 +52,7 @@ module.exports = {
     }
   },
   router: {
-    middleware: ['ssr-cookie', 'https']
+    middleware: ['ssr-cookie']
   },
   srcDir: path.resolve(__dirname, 'src', 'client')
 };

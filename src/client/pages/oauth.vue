@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-layout row justify-center>
       <v-flex xs12 sm10 md8 lg6 xl6 class="text-xs-center">
-        <v-btn :to="authorizeURL" tabindex="1" tag="a" target="_blank" @click.native="clicked = true">Get Pin</v-btn>
+        <v-btn :href="authorizeURL" tabindex="1" tag="a" target="_blank" @click.native="clicked = true">Get Pin</v-btn>
         <form @submit.prevent="submit()">
           <v-text-field v-model="pin" label="Pin"></v-text-field>
           <input type="submit" style="display: none" :disabled="disabledSubmit">
@@ -25,7 +25,7 @@
         clicked: false,
         pin: '',
         loading: false
-      }
+      };
     },
     async asyncData ({ store }) {
       try {
@@ -36,7 +36,7 @@
       }
     },
     computed: {
-      disabledSubmit() {
+      disabledSubmit () {
         return this.pin.length === 0 || !this.clicked;
       }
     },
@@ -45,17 +45,17 @@
         notifyFailure: 'notification/FAILURE',
         notifySuccess: 'notification/SUCCESS'
       }),
-      submit() {
+      submit () {
         this.loading = true;
-        axios.post(`/users/oauth`, { pin: this.pin})
+        axios.post(`/users/oauth`, { pin: this.pin })
         .then(() => {
           this.$router.replace('/');
         }).catch(() => {
-          this.notifyFailure({ message: 'Oauth failed. Please try again.' })
-        })
+          this.notifyFailure({ message: 'Oauth failed. Please try again.' });
+        });
       }
     }
-  }
+  };
 </script>
 
 <style>

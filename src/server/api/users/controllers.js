@@ -10,10 +10,10 @@ import { MeoCloudOAuth } from '../../util/meocloud';
 export const index = {
   async post (req, res) {
     try {
-      let { username, email, firstName, lastName, password1, password2 } = req.body;
+      let { username, email, password1, password2 } = req.body;
       if (password1 === password2) {
         let password = await argon2.hash(password1);
-        let newUser = new User({ username, email, firstName, lastName, password });
+        let newUser = new User({ username, email, password });
         let savedUser = await newUser.save();
         res.json({ message: `Thanks for signing up, ${savedUser.username}!` });
       } else {
@@ -52,6 +52,25 @@ export const signOut = {
     try {
       blacklist.revoke(req.user);
       res.json({ message: 'Sign out successful. Good bye! :)' });
+    } catch (error) {
+      res.handleServerError(error);
+    }
+  }
+};
+
+export const check = {
+  async get (req, res) {
+    try {
+      let authorizedQueries = ['username', 'email'];
+      if (authorizedQueries.includes(req.query.check)) {
+        let check = req.query.check;
+        let data = req.query.data;
+        let user = await User.find({ [check]: data });
+        if (user.length) res.json({ exists: true });
+        else res.json({ exists: false });
+      } else {
+        throw new ServerError('Query not supported.', { status: 400 });
+      }
     } catch (error) {
       res.handleServerError(error);
     }

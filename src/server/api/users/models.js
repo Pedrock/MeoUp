@@ -20,8 +20,6 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Invalid email address'],
     require: true
   },
-  firstName: String,
-  lastName: String,
   password: {
     type: String,
     require: true,

@@ -11,7 +11,7 @@
           hint="At least 5 characters."
           :rules="[usernameExists]"
           min="5"
-          :counter="this.username.length > 0 ? true : false"
+          :counter="this.username.length > 0"
         ></v-text-field>
         <v-text-field
           @keyup.native="checkEmail"
@@ -23,23 +23,14 @@
           required
         ></v-text-field>
         <v-text-field
-          v-model="firstName"
-          label="First Name"
-          name="firstName"
-        ></v-text-field>
-        <v-text-field
-          v-model="lastName"
-          label="Last Name"
-          name="lastName"
-        ></v-text-field>
-        <v-text-field
           v-model="password1"
           name="password1"
           label="Password"
           hint="At least 8 characters. Mix it up!"
-          :counter="this.password1.length > 0 ? true : false"
+          :counter="this.password1.length > 0"
           min="8"
-          append-icon="visibility_off"
+          :append-icon="pw1 ? 'visibility_off' : 'visibility'"
+          :append-icon-cb="() => (pw1 = !pw1)"
           :type="pw1 ? 'password' : 'text'"
           required
         ></v-text-field>
@@ -72,8 +63,6 @@ export default {
     return {
       username: '',
       email: '',
-      firstName: '',
-      lastName: '',
       password1: '',
       password2: '',
       pw1: true,
@@ -84,16 +73,16 @@ export default {
   },
   computed: {
     passwordsMatch () {
-      return this.password1 === this.password2 ? '' : 'Passwords don\'t match';
+      return this.password1 === this.password2 ? true : 'Passwords don\'t match';
     },
     usernameExists () {
-      return this.usernameExistsData ? 'Username already exists.' : '';
+      return this.usernameExistsData ? 'Username already exists.' : true;
     },
     emailExists () {
-      return this.emailExistsData ? 'User with that email already exists.' : '';
+      return this.emailExistsData ? 'User with that email already exists.' : true;
     },
     isEmail () {
-      return !isEmail(this.email) && this.email.length ? 'Must be a valid email' : '';
+      return !isEmail(this.email) && this.email.length ? 'Must be a valid email' : true;
     }
   },
   methods: {
@@ -133,8 +122,6 @@ export default {
       this.$store.dispatch('user/signUp', {
         username: this.username,
         email: this.email,
-        firstName: this.firstName,
-        lastName: this.lastName,
         password1: this.password1,
         password2: this.password2
       }).then(() => {
