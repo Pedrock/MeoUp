@@ -118,7 +118,7 @@ export const oauth = {
     async get (req, res) {
       const user = await User.findById(req.user.id);
       const { meocloudToken, meocloudSecret } = user;
-      res.json(meocloudToken && meocloudSecret);
+      res.json(!!(meocloudToken && meocloudSecret));
     }
   }
 };

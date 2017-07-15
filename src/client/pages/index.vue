@@ -12,7 +12,7 @@
           <downloads-list :downloads="downloads"></downloads-list>
 
           <v-layout row>
-            <v-dialog v-model="dialog" width="600px">
+            <v-dialog v-model="dialog" width="600px" :persistent="loading">
               <form @submit.prevent="download" ref="form">
                 <v-card>
                   <v-card-title>

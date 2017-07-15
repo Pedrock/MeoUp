@@ -46,7 +46,6 @@ const uploadFromUrl = async function (api, stream, filename, userId, url, io) {
       filename = cleanName(filename);
       stream.pipe(api.getUploadPipe(filename)).catch(reject);
 
-      // eslint-disable-next-line no-unused-vars
       const download = await new Download({_user: userId, url, filename}).save();
       resolve();
 
@@ -71,11 +70,13 @@ const uploadFromUrl = async function (api, stream, filename, userId, url, io) {
         save();
       }).on('error', function (err) {
         console.log('error', err);
+        save.cancel();
         download.status = 'error';
         download.save();
       }).on('end', function () {
         if (!aborted) {
           console.log('progress', 'Finished');
+          save.cancel();
           download.status = 'finished';
           download.downloaded = download.downloadSize || download.downloaded;
           share(api, download, io, filename, 6);

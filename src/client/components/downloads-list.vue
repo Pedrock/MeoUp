@@ -82,13 +82,13 @@
         const getPercentage = download => (Math.floor(download.downloaded / download.downloadSize * 10000) / 100);
 
         const getProgress = download => {
-          if (download.status === 'error') return {progress: 100, progressText: 'Failed'};
-          else if (download.status === 'finished') return {progress: 100, progressText: '100 %'};
+          if (download.status === 'error') return { progress: 100, progressText: 'Failed' };
+          else if (download.status === 'finished') return { progress: 100, progressText: '100 %' };
           else if (download.downloadSize) {
             const progress = getPercentage(download);
-            return {progress, progressText: `${progress} %`};
-          } else if (download.downloaded) return {progress: null, progressText: 'N/A'};
-          else return {progress: 0, progressText: '0 %'};
+            return { progress, progressText: `${progress} %` };
+          } else if (download.downloaded) return { progress: null, progressText: 'N/A' };
+          else return { progress: 0, progressText: '0 %' };
         };
 
         return this.myDownloads.map(download => {
