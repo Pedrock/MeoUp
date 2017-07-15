@@ -30,6 +30,7 @@ export const signIn = {
   async post (req, res) {
     try {
       let { username, password } = req.body;
+      username = username.toLowerCase();
       let user = await User.findOne({ username });
       if (!user) throw new ServerError('Authentication failed. Incorrect username or password', { status: 401, log: false });
       let passwordHash = user.password;
