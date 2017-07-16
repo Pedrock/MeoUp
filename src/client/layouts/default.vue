@@ -27,9 +27,9 @@
       </v-menu>
     </v-toolbar>
     <main>
-      <v-container fluid>
+      <div fluid>
         <nuxt></nuxt>
-      </v-container>
+      </div>
     </main>
     <v-snackbar
             :timeout="3000"

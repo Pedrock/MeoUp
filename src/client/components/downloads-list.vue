@@ -5,6 +5,9 @@
            :key="download.id"
            :class="{finished: download.status === 'finished'}">
         <div class="download-side-icons">
+          <a v-if="download.sources" class="watch-icon" href="#" @click.prevent="toggleWatch(download.id)" :class="{open: watching[download.id]}">
+            <i class="fa fa-play-circle fa-2x"></i>
+          </a>
           <a class="download-icon" :href="download.downloadUrl">
             <span class="fa-stack fa">
               <i class="fa fa-circle fa-stack-2x"></i>
@@ -21,6 +24,11 @@
           <v-progress-linear v-model="download.progress" :indeterminate="download.progress === null"></v-progress-linear>
         </div>
         <div class="text-xs-center" v-text="download.progressText"></div>
+        <transition name="fade">
+          <div v-if="watching[download.id]">
+            <video-js :sources="download.sources" destroy-delay="1000"></video-js>
+          </div>
+        </transition>
       </div>
     </transition-group>
   </div>
@@ -30,14 +38,20 @@
   import { socket } from '../plugins/socket.io.js';
   import axios from '../plugins/axios';
   import { mapMutations } from 'vuex';
+  import VideoJs from './video-js';
+
+  const extensionRegex = /\.([0-9a-z]+)\/$/i;
+  const mediaExtensions = ['flac', 'ogv', 'ogm', 'ogg', 'oga', 'webm', 'wav', 'mp4', 'm4v', 'm4a', 'mp3', 'amr', 'avi', '3gp'];
 
   export default {
+    components: { VideoJs },
     name: 'downloads-list',
     props: ['downloads'],
     data () {
       return {
         myDownloads: this.downloads,
-        deleted: {}
+        deleted: {},
+        watching: {}
       };
     },
     beforeMount () {
@@ -91,10 +105,24 @@
           else return { progress: 0, progressText: '0 %' };
         };
 
+        const getSources = download => {
+          if (download.status !== 'finished') return null;
+          const extensionMatch = download.shareUrl.match(extensionRegex);
+          if (!extensionMatch) return null;
+          const extension = extensionMatch[1];
+          if (mediaExtensions.indexOf(extension) !== -1) {
+            return [{
+              src: getDownloadUrl(download.shareUrl),
+              type: `video/${extension}`
+            }];
+          }
+        };
+
         return this.myDownloads.map(download => {
           return {
             ...download,
             downloadUrl: download.shareUrl ? getDownloadUrl(download.shareUrl) : null,
+            sources: getSources(download),
             ...getProgress(download)
           };
         });
@@ -107,7 +135,6 @@
       async deleteDownload (id) {
         if (this.deleted[id]) return;
         this.$set(this.deleted, id, true);
-        console.log(`Delete ${id}`);
         try {
           await axios.delete(`/downloads/${id}`);
           this.myDownloads = this.myDownloads.filter(d => d.id !== id);
@@ -115,6 +142,9 @@
           this.notifyError({ message: 'It was not possible to delete this download.' });
           this.$delete(this.deleted, id);
         }
+      },
+      toggleWatch (id) {
+        this.$set(this.watching, id, !this.watching[id]);
       }
     }
   };
@@ -144,6 +174,17 @@
       font-size: 1.75em;
     }
   }
+  .watch-icon {
+    margin-right: 10px;
+    .fa {
+      transition: all 0.3s ease-in-out;
+      vertical-align: top;
+      transform-origin: 50% 49.5%;
+    }
+    &.open .fa {
+      transform: rotate(90deg);
+    }
+  }
 
   .download-side-icons {
     float: right;
@@ -153,9 +194,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: calc(100% - 60px);
     display: block;
-    margin: 0;
+    margin-top: 5px;
+    line-height: 1em;
+    padding-right: 5px;
   }
 
   .spinner {
@@ -166,15 +208,23 @@
   }
 
   .download {
-    height: 80px;
     overflow: hidden;
     width: 100%;
   }
   .list-enter-active, .list-leave-active {
     transition: all 1s;
+    height: 77px;
   }
   .list-enter, .list-leave-to {
     height: 0;
     opacity: 0;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: all 1s;
+    max-height: 100vh;
+  }
+  .fade-enter, .fade-leave-to {
+    max-height: 0;
   }
 </style>

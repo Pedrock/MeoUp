@@ -7,7 +7,7 @@ require('dotenv').config({
 
 module.exports = {
   build: {
-    vendor: ['vuetify', 'jwt-decode', 'axios']
+    vendor: ['vuetify', 'jwt-decode', 'axios', 'socket.io-client', 'video.js', 'videojs-hotkeys']
   },
   buildDir: 'dist/client',
   cache: true,
