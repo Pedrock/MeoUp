@@ -31,7 +31,7 @@ export const mutations = {
   },
   SIGN_IN_SUCCESS (state, data) {
     if (process.BROWSER_BUILD) {
-      Cookies.set('token', `${data.token}`);
+      Cookies.set('token', `${data.token}`, { expires: 30 });
     }
     state.username = data.user.username;
     state.firstName = data.user.firstName;
