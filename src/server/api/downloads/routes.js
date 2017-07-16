@@ -22,6 +22,6 @@ router.use(authenticate());
 
 router.get('/', index.get);
 router.post('/', tokenMiddleware, index.post);
-router.delete('/:id', index.delete);
+router.delete('/:id', tokenMiddleware, index.delete);
 
 export default router;

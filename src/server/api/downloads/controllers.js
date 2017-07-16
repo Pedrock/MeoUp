@@ -58,7 +58,7 @@ const uploadFromUrl = async function (api, stream, filename, userId, url, io) {
           aborted = true;
           stream.abort();
         }
-      }), 1000);
+      }), 2000, { 'trailing': false });
 
       stream.on('progress', function (state) {
         download.downloaded = state.size.transferred;
@@ -176,9 +176,12 @@ export const index = {
   async delete (req, res) {
     try {
       const download = await Download.findOneAndRemove({_id: req.params.id, _user: req.user.id});
-      if (download) {
-        req.io.to(`/users/${download._user}`).emit('delete', download.id);
+      if (!download) {
+        return res.handleServerError(new ServerError('Not found', { status: 404 }));
       }
+      const meoCloud = new MeoCloud(req.meocloud);
+      meoCloud.delete(download.filename);
+      req.io.to(`/users/${download._user}`).emit('delete', download.id);
       res.end();
     } catch (error) {
       res.handleServerError(error);
