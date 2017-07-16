@@ -163,7 +163,7 @@ function youtubeDownloadRequest (req, res) {
 export const index = {
   async get (req, res) {
     try {
-      res.json(await Download.find({_user: req.user.id}));
+      res.json(await Download.find({_user: req.user.id}).sort('createdAt'));
     } catch (error) {
       res.handleServerError(error);
     }
