@@ -114,6 +114,9 @@ export default {
 <style lang="stylus" scoped>
   .main-container {
     padding: 0;
+    > div {
+      margin: 0;
+    }
   }
   .btns-container {
     padding: 0;

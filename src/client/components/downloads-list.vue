@@ -16,7 +16,7 @@
           </a>
           <v-progress-circular v-if="deleted[download.id]" indeterminate v-bind:width="3" :size="25" class="spinner"></v-progress-circular>
           <a v-else class="delete-icon" href="#" @click.prevent="deleteDownload(download.id)">
-            <i class="fa fa-trash fa-lg"></i>
+            <i class="fa fa-trash fa-2x"></i>
           </a>
         </div>
         <a class="download-link" :href="download.shareUrl" :title="download.url" v-text="download.filename"></a>
@@ -137,7 +137,9 @@
         this.$set(this.deleted, id, true);
         try {
           await axios.delete(`/downloads/${id}`);
-          this.myDownloads = this.myDownloads.filter(d => d.id !== id);
+          this.$nextTick(function () {
+            this.myDownloads = this.myDownloads.filter(d => d.id !== id);
+          });
         } catch (error) {
           this.notifyError({ message: 'It was not possible to delete this download.' });
           this.$delete(this.deleted, id);
@@ -171,14 +173,14 @@
   .delete-icon {
     margin-left: 10px;
     .fa {
-      font-size: 1.75em;
+      font-size: 1.8em;
+      width: 20px;
     }
   }
   .watch-icon {
     margin-right: 10px;
     .fa {
       transition: all 0.3s ease-in-out;
-      vertical-align: top;
       transform-origin: 50% 49.5%;
     }
     &.open .fa {
@@ -188,6 +190,13 @@
 
   .download-side-icons {
     float: right;
+    > * {
+      display: inline-block;
+    }
+    .fa {
+      line-height: 28px;
+      vertical-align: top;
+    }
   }
 
   .download-link {
@@ -202,9 +211,10 @@
 
   .spinner {
     font-size: 1.5em
-    margin-left: 4.2px;
-    vertical-align: middle;
+    margin-left: 5px;
+    vertical-align: top;
     color: #007bf6;
+    height: 28px !important;
   }
 
   .download {

@@ -58,7 +58,7 @@ export const mutations = {
     state.firstName = '';
     state.lastName = '';
     state.email = '';
-    console.log('Sign out success!', message);
+    console.log('Sign out success!');
   },
   SIGN_OUT_FAILURE (state, error) {
     console.error(error);

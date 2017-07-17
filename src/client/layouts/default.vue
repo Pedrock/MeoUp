@@ -1,11 +1,17 @@
 <template>
   <v-app>
     <v-toolbar class="indigo darken-4" dark>
-      <v-toolbar-title>{{name}}</v-toolbar-title>
+      <v-toolbar-title>
+        <v-btn flat slot="activator" light exact active-class="active" to="/">
+          {{name}}
+        </v-btn>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu bottom :nudge-right="40">
         <v-btn icon="icon" slot="activator" light>
-          <v-icon>more_vert</v-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 18">
+            <path fill="#fff" d="M9 5.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm0 2c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0 5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+          </svg>
         </v-btn>
         <v-list>
           <v-list-item>
@@ -59,3 +65,19 @@
     }
   };
 </script>
+
+<style lang="stylus">
+  .toolbar__content {
+    height: 48px !important;
+  }
+  .toolbar__title {
+    margin-left: 0 !important;
+
+    a.active:hover, a.active:focus {
+      .btn__content:before, .ripple__container {
+        display: none;
+      }
+      cursor: default;
+    }
+  }
+</style>
