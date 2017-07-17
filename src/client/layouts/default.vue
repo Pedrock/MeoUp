@@ -3,7 +3,7 @@
     <v-toolbar class="indigo darken-4" dark>
       <v-toolbar-title>{{name}}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-menu bottom right>
+      <v-menu bottom :nudge-right="40">
         <v-btn icon="icon" slot="activator" light>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -45,7 +45,7 @@
             v-model="$store.state.notification.snackbar"
     >
       {{ $store.state.notification.text }}
-      <v-btn light flat @click.native="$store.state.notification.snackbar = false">Close</v-btn>
+      <v-btn light flat @click="$store.state.notification.snackbar = false">Close</v-btn>
     </v-snackbar>
   </v-app>
 </template>

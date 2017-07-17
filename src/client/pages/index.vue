@@ -5,8 +5,8 @@
         <v-container v-if="$store.state.user.isAuthenticated">
 
           <v-container class="btns-container">
-            <v-btn primary dark slot="activator" @click.native.stop="openDialog('file')">File Download</v-btn>
-            <v-btn primary dark slot="activator" @click.native.stop="openDialog('youtube')">Youtube Download</v-btn>
+            <v-btn primary dark slot="activator" @click.stop="openDialog('file')">File Download</v-btn>
+            <v-btn primary dark slot="activator" @click.stop="openDialog('youtube')">Youtube Download</v-btn>
           </v-container>
 
           <downloads-list :downloads="downloads"></downloads-list>
@@ -22,7 +22,7 @@
                     <v-text-field v-focus label="URL" type="url" required v-model="url"></v-text-field>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn class="green--text darken-1" flat="flat" @click.native="dialog = false" :disabled="loading">Cancel</v-btn>
+                    <v-btn class="green--text darken-1" flat="flat" @click="dialog = false" :disabled="loading">Cancel</v-btn>
                     <v-btn class="green--text darken-1" flat="flat" type="submit" :loading="loading" :disabled="loading">Download</v-btn>
                   </v-card-actions>
                 </v-card>

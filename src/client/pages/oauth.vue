@@ -2,11 +2,11 @@
   <v-container fluid>
     <v-layout row justify-center>
       <v-flex xs12 sm10 md8 lg6 xl6 class="text-xs-center">
-        <v-btn :href="authorizeURL" tabindex="1" tag="a" target="_blank" @click.native="clicked = true">Get Pin</v-btn>
+        <v-btn :href="authorizeURL" tabindex="1" tag="a" target="_blank" @click="clicked = true">Get Pin</v-btn>
         <form @submit.prevent="submit()">
           <v-text-field v-model="pin" label="Pin"></v-text-field>
           <input type="submit" style="display: none" :disabled="disabledSubmit">
-          <v-btn :loading="false" :disabled="disabledSubmit" tabindex="3" @click.native="submit()">Submit</v-btn>
+          <v-btn :loading="false" :disabled="disabledSubmit" tabindex="3" @click="submit()">Submit</v-btn>
         </form>
       </v-flex>
     </v-layout>

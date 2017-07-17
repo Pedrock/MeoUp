@@ -45,7 +45,7 @@
           :rules="[passwordsMatch]"
           required
         ></v-text-field>
-        <v-btn @click.native="submit">Submit</v-btn>
+        <v-btn @click="submit">Submit</v-btn>
       </form>
     </v-container>
   </v-card>

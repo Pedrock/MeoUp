@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click.native="signOut">Sign Out</v-btn>
+  <v-btn @click="signOut">Sign Out</v-btn>
 </template>
 
 <script>

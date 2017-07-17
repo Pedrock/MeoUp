@@ -60,7 +60,7 @@ async function start () {
 
 // setup the database connection
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB_URL);
+mongoose.connect(process.env.DB_URL, { useMongoClient: true });
 
 start();
 
