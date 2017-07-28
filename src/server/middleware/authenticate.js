@@ -1,3 +1,4 @@
+// @flow
 import blacklist from 'express-jwt-blacklist';
 import { compose } from 'compose-middleware';
 import jwt from 'express-jwt';
@@ -20,7 +21,7 @@ blacklist.configure({
   }
 });
 
-const jwtMiddleware = function (options) {
+const jwtMiddleware = function (options: any) {
   return jwt({
     secret: process.env.SECRET,
     isRevoked: blacklist.isRevoked,
@@ -42,7 +43,7 @@ const jwtMiddleware = function (options) {
   });
 };
 
-const authErrors = function (error, req, res, next) {
+const authErrors = function (error: Error, req: $Request, res: $Response, next: express$NextFunction) {
   if (error.name === 'UnauthorizedError') {
     res.status(401).json({ name: error.name, message: error.message });
   } else {
@@ -51,7 +52,7 @@ const authErrors = function (error, req, res, next) {
   }
 };
 
-function authenticate (options = {}) {
+function authenticate (options: any = {}) {
   return compose([jwtMiddleware(options), authErrors]);
 }
 

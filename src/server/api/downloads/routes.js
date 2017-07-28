@@ -1,3 +1,4 @@
+// @flow
 import { Router } from 'express';
 import authenticate from '~middleware/authenticate';
 import { index } from './controllers';
@@ -6,7 +7,7 @@ import { ServerError } from '~middleware/express-server-error';
 
 const router = Router();
 
-function tokenMiddleware (req, res, next) {
+function tokenMiddleware (req: $Request, res: $Response, next: express$NextFunction) {
   User.findById(req.user.id).then((user) => {
     const { meocloudToken, meocloudSecret } = user;
     if (meocloudToken && meocloudSecret) {

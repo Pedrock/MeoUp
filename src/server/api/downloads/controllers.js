@@ -1,3 +1,4 @@
+// @flow
 import path from 'path';
 import progress from 'request-progress';
 import request from 'request';
@@ -13,8 +14,7 @@ const progressOptions = {
   throttle: 250
 };
 
-const share = function (api, download, io, filename, maxTries, level) {
-  level = (level === undefined) ? 1 : level;
+const share = function (api: MeoCloud, download, io, filename, maxTries: number, level: number = 1) {
   setTimeout(function () {
     const afterSave = (err, doc, numAffected) => {
       if (err || !numAffected) {
@@ -40,7 +40,7 @@ const share = function (api, download, io, filename, maxTries, level) {
   }, 1000);
 };
 
-const uploadFromUrl = async function (api, stream, filename, userId, url, io) {
+const uploadFromUrl = async function (api: MeoCloud, stream, filename, userId, url, io) {
   return new Promise(async (resolve, reject) => {
     try {
       filename = cleanName(filename);
@@ -90,7 +90,7 @@ const uploadFromUrl = async function (api, stream, filename, userId, url, io) {
   });
 };
 
-function fileDownloadRequest (req, res) {
+function fileDownloadRequest (req: $Request, res: $Response) {
   try {
     const url = req.body.url;
 
@@ -103,7 +103,7 @@ function fileDownloadRequest (req, res) {
 
     const r = progress(request(url), progressOptions);
     r.on('response', function (res2) {
-      let filename;
+      let filename: ?string;
       if (res2.headers['content-disposition']) {
         const parts = res2.headers['content-disposition'].split(';');
         for (let i = 0; i < parts.length; i++) {
@@ -116,7 +116,7 @@ function fileDownloadRequest (req, res) {
       }
 
       if (filename === undefined) {
-        const parsed = require('url').parse(res2.request.href);
+        const parsed: any = require('url').parse(res2.request.href);
         filename = path.basename(parsed.pathname);
       }
 
@@ -132,7 +132,7 @@ function fileDownloadRequest (req, res) {
   }
 }
 
-function youtubeDownloadRequest (req, res) {
+function youtubeDownloadRequest (req: $Request, res: $Response) {
   new Promise((resolve, reject) => {
     try {
       const url = req.body.youtube;
@@ -161,30 +161,32 @@ function youtubeDownloadRequest (req, res) {
 }
 
 export const index = {
-  async get (req, res) {
+  async get (req: $Request, res: $Response) {
     try {
       res.json(await Download.find({_user: req.user.id}).sort('createdAt'));
     } catch (error) {
       res.handleServerError(error);
     }
   },
-  async post (req, res) {
+  async post (req: $Request, res: $Response) {
     if (req.body.url) fileDownloadRequest(req, res);
     else if (req.body.youtube) youtubeDownloadRequest(req, res);
     else res.handleServerError(new ServerError('Invalid Request', { status: 400 }));
   },
-  async delete (req, res) {
-    try {
-      const download = await Download.findOneAndRemove({_id: req.params.id, _user: req.user.id});
-      if (!download) {
-        return res.handleServerError(new ServerError('Not found', { status: 404 }));
+  delete (req: $Request, res: $Response) {
+    return new Promise(async () => {
+      try {
+        const download = await Download.findOneAndRemove({_id: req.params.id, _user: req.user.id});
+        if (!download) {
+          return res.handleServerError(new ServerError('Not found', { status: 404 }));
+        }
+        const meoCloud = new MeoCloud(req.meocloud);
+        meoCloud.delete(download.filename);
+        req.io.to(`/users/${download._user}`).emit('delete', download.id);
+        res.end();
+      } catch (error) {
+        res.handleServerError(error);
       }
-      const meoCloud = new MeoCloud(req.meocloud);
-      meoCloud.delete(download.filename);
-      req.io.to(`/users/${download._user}`).emit('delete', download.id);
-      res.end();
-    } catch (error) {
-      res.handleServerError(error);
-    }
+    });
   }
 };
