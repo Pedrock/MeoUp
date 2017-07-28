@@ -1,3 +1,4 @@
+// @flow
 import { Router } from 'express';
 import authenticate from '~middleware/authenticate';
 import { index, signIn, signOut, check, oauth } from './controllers';

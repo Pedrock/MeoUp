@@ -1,3 +1,4 @@
+// @flow
 import { Router } from 'express';
 import usersRoutes from './users/routes';
 import adminRoutes from './admin/routes';
@@ -13,7 +14,7 @@ router.use('/users', usersRoutes);
 router.use('/downloads', downloadsRoutes);
 router.use('/admin', authenticate(), adminRoutes);
 
-router.get('/', (req, res) => {
+router.get('/', (req: $Request, res: $Response) => {
   res.json(listEndpoints(router));
 });
 

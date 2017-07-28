@@ -1,3 +1,4 @@
+// @flow
 const querystring = require('querystring');
 const rp = require('request-promise-native');
 const { OAuth } = require('oauth-libre');
@@ -20,26 +21,27 @@ const defaultConfig = {
   }
 };
 
-module.exports.MeoCloudOAuth = function () {
+export function MeoCloudOAuth () {
   return new OAuth(defaultConfig.oauth.request_token_endpoint, defaultConfig.oauth.access_token_endpoint,
     defaultConfig.oauth.consumer_key, defaultConfig.oauth.consumer_secret, OAUTH_VERSION, 'oob', SIGNATURE_METHOD);
-};
+}
 
-module.exports.MeoCloud = function (credentials) {
-  this.config = Object.assign({}, defaultConfig);
-  this.config.oauth.token = credentials.token;
-  this.config.oauth.token_secret = credentials.token_secret;
+export class MeoCloud {
+  config: { oauth: Object, api: Object };
 
-  const { endpoint, content_endpoint: contentEndpoint, root } = this.config.api;
+  constructor (credentials: { token: string, token_secret: string }) {
+    this.config = Object.assign({}, defaultConfig);
+    this.config.oauth.token = credentials.token;
+    this.config.oauth.token_secret = credentials.token_secret;
+  }
 
-  const getOptions = (requestMethod, endpoint, params) => {
-    params = params !== undefined ? params : {};
-
+  getOptions (requestMethod: 'get' | 'post' | 'put' | 'delete', endpoint: string | Array<string>, params?: Object = {}) {
     const options = {
       oauth: this.config.oauth,
       method: requestMethod,
       uri: endpoint instanceof Array ? endpoint.join('') : endpoint,
-      timeout: 0
+      timeout: 0,
+      form: undefined
     };
 
     const qstring = querystring.stringify(params);
@@ -53,20 +55,26 @@ module.exports.MeoCloud = function (credentials) {
     return options;
   };
 
-  this.accountInfo = () => rp(getOptions('get', [endpoint, 'Account/Info']));
+  accountInfo () {
+    const { endpoint } = this.config.api;
+    return rp(this.getOptions('get', [endpoint, 'Account/Info']));
+  }
 
-  this.getUploadPipe = (path) => {
+  getUploadPipe (path: string) {
+    const { root, content_endpoint: contentEndpoint } = this.config.api;
     if (path && !path.startsWith('/')) path = '/' + path;
-    return rp(getOptions('put', [contentEndpoint, 'Files/', root, path]));
+    return rp(this.getOptions('put', [contentEndpoint, 'Files/', root, path]));
   };
 
-  this.share = (path) => {
+  share (path: string) {
+    const { root, content_endpoint: contentEndpoint } = this.config.api;
     if (path && !path.startsWith('/')) path = '/' + path;
-    return rp(getOptions('post', [contentEndpoint, 'Shares/', root, path]));
+    return rp(this.getOptions('post', [contentEndpoint, 'Shares/', root, path]));
   };
 
-  this.delete = (path) => {
+  delete (path: string) {
+    const { root, content_endpoint: contentEndpoint } = this.config.api;
     if (path && !path.startsWith('/')) path = '/' + path;
-    return rp(getOptions('post', [contentEndpoint, 'Fileops/Delete'], { root, path }));
+    return rp(this.getOptions('post', [contentEndpoint, 'Fileops/Delete'], { root, path }));
   };
-};
+}

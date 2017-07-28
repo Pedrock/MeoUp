@@ -1,3 +1,4 @@
+// @flow
 import mongoose from 'mongoose';
 import argon2 from 'argon2';
 import validator from 'validator';

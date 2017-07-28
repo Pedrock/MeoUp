@@ -1,3 +1,4 @@
+// @flow
 import argon2 from 'argon2';
 import blacklist from 'express-jwt-blacklist';
 import User from './models';
@@ -8,7 +9,7 @@ import { ServerError } from '~middleware/express-server-error';
 import { MeoCloudOAuth } from '../../util/meocloud';
 
 export const index = {
-  async post (req, res) {
+  async post (req: $Request, res: $Response) {
     try {
       let { username, email, password1, password2 } = req.body;
       if (password1 === password2) {
@@ -27,7 +28,7 @@ export const index = {
 
 // separate into auth app if need be. 'sign-up' is handled as a POST request to '/users'
 export const signIn = {
-  async post (req, res) {
+  async post (req: $Request, res: $Response) {
     try {
       let { username, password } = req.body;
       username = username.toLowerCase();
@@ -49,7 +50,7 @@ export const signIn = {
 };
 
 export const signOut = {
-  async post (req, res) {
+  async post (req: $Request, res: $Response) {
     try {
       blacklist.revoke(req.user);
       res.json({ message: 'Sign out successful. Good bye! :)' });
@@ -60,7 +61,7 @@ export const signOut = {
 };
 
 export const check = {
-  async get (req, res) {
+  async get (req: $Request, res: $Response) {
     try {
       let authorizedQueries = ['username', 'email'];
       if (authorizedQueries.includes(req.query.check)) {
@@ -79,7 +80,7 @@ export const check = {
 };
 
 export const oauth = {
-  async get (req, res) {
+  async get (req: $Request, res: $Response) {
     try {
       const oauth = new MeoCloudOAuth();
       oauth.getOAuthRequestToken(async (error, oauthToken, oauthTokenSecret) => {
@@ -94,7 +95,7 @@ export const oauth = {
       res.handleServerError(error);
     }
   },
-  async post (req, res) {
+  async post (req: $Request, res: $Response) {
     try {
       const oauth = new MeoCloudOAuth();
       const user = await User.findById(req.user.id);
@@ -115,7 +116,7 @@ export const oauth = {
     }
   },
   check: {
-    async get (req, res) {
+    async get (req: $Request, res: $Response) {
       const user = await User.findById(req.user.id);
       const { meocloudToken, meocloudSecret } = user;
       res.json(!!(meocloudToken && meocloudSecret));

@@ -1,3 +1,4 @@
+// @flow
 import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 // import cors from 'cors'
@@ -11,9 +12,17 @@ import socketio from 'socket.io';
 import config from '../../nuxt.config';
 import apiRoutes from './api';
 
+const { HOST, PORT, DB_URL } = process.env;
+if (!HOST || !PORT) {
+  throw new Error('process.env.HOST or process.env.PORT not set');
+}
+if (!DB_URL) {
+  throw new Error('process.env.DB_URL not set');
+}
+
 const app = express();
 
-const server = http.Server(app);
+const server = (http : any).Server(app);
 const io = socketio(server);
 
 // Global middleware
@@ -26,7 +35,7 @@ app.use(urlencoded({ extended: false }));
 app.use(json());
 app.use(cookieParser());
 
-app.use((req, res, next) => {
+app.use((req: $Request, res: $Response, next: express$NextFunction) => {
   req.io = io;
   next();
 });
@@ -54,8 +63,8 @@ async function start () {
   app.use(nuxt.render);
 
   // Listen to the server
-  server.listen(process.env.PORT, process.env.HOST);
-  console.log(`Server listening on http://${process.env.HOST}:${process.env.PORT}`); // eslint-disable-line no-console
+  server.listen(PORT, HOST);
+  console.log(`Server listening on http://${HOST}:${PORT}`); // eslint-disable-line no-console
 }
 
 // setup the database connection
