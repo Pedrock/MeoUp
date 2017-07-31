@@ -8,4 +8,4 @@ db/
 
 src/client/static/manifest*.json
 src/client/static/sw.js
-src/client/static/workbox-sw*.js
+src/client/static/workbox-sw*.js*
