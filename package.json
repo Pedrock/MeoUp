@@ -1,6 +1,6 @@
 {
   "name": "meoup",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Website which allows users to transfer files and Youtube videos from a URL directly to a MeoCloud account.",
   "author": "Pedro Câmara <camara-pedro@hotmail.com>",
   "private": true,
@@ -17,9 +17,11 @@
     "flow": "flow"
   },
   "dependencies": {
-    "@nuxtjs/component-cache": "1.0.0",
+    "@nuxtjs/component-cache": "^1.1.0",
     "@nuxtjs/font-awesome": "1.0.2",
-    "@nuxtjs/pwa": "0.2.0",
+    "@nuxtjs/icon": "^1.0.1",
+    "@nuxtjs/pwa": "^0.2.1",
+    "@nuxtjs/workbox": "^1.2.0",
     "argon2": "0.16.1",
     "axios": "0.16.2",
     "babel-polyfill": "6.23.0",
@@ -40,7 +42,7 @@
     "mongodb": "2.2.30",
     "mongoose": "4.11.3",
     "npm-run-all": "4.0.2",
-    "nuxt": "1.0.0-alpha.5",
+    "nuxt": "^1.0.0-rc4",
     "oauth-libre": "0.9.15",
     "request": "2.81.0",
     "request-progress": "3.0.0",
@@ -65,7 +67,8 @@
   "devDependencies": {
     "babel-eslint": "7.2.3",
     "babel-preset-flow": "6.23.0",
-    "backpack-core": "0.3.0",
+    "backpack-core": "^0.4.2",
+    "es6-promise": "^4.1.1",
     "eslint": "3.19.0",
     "eslint-config-standard": "10.2.1",
     "eslint-loader": "1.9.0",
@@ -80,6 +83,8 @@
     "flow-typed": "2.1.5",
     "rimraf": "2.6.1",
     "stylus": "0.54.5",
-    "stylus-loader": "3.0.1"
+    "stylus-loader": "3.0.1",
+    "uglify-js": "^2.8.29",
+    "webpack": "^3.5.5"
   }
 }

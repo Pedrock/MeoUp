@@ -7,7 +7,7 @@ require('dotenv').config({
 
 module.exports = {
   build: {
-    vendor: ['babel-polyfill', 'vuetify', 'jwt-decode', 'axios', 'socket.io-client', 'video.js', 'videojs-hotkeys']
+    vendor: ['babel-polyfill', 'vuetify', 'jwt-decode', 'axios', 'socket.io-client']
   },
   buildDir: 'dist/client',
   cache: true,
@@ -35,8 +35,8 @@ module.exports = {
     '@nuxtjs/font-awesome'
   ],
   plugins: [
-    '~plugins/vuetify.js',
-    { src: '~plugins/socket.io', ssr: false }
+    '~/plugins/vuetify.js',
+    { src: '~/plugins/socket.io', ssr: false }
   ],
   render: {
     static: {

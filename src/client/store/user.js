@@ -1,4 +1,4 @@
-import axios from '~plugins/axios';
+import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 
 export const state = () => {
@@ -30,7 +30,7 @@ export const mutations = {
     console.log('Sign In pending...');
   },
   SIGN_IN_SUCCESS (state, data) {
-    if (process.BROWSER_BUILD) {
+    if (process.browser) {
       Cookies.set('token', `${data.token}`, { expires: 30 });
     }
     state.username = data.user.username;
