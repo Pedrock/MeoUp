@@ -1,0 +1,10 @@
+.git
+.gitignore
+dist/
+node_modules/
+db/
+.idea/
+
+src/client/static/manifest*.json
+src/client/static/sw.js
+src/client/static/workbox-sw*.js*
