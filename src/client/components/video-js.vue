@@ -61,7 +61,7 @@
         width: 10em
     }
 
-    .video-js .vjs-controls-disabled .vjs-big-play-button {
+    .video-js.vjs-controls-disabled .vjs-big-play-button {
         display: none!important
     }
 

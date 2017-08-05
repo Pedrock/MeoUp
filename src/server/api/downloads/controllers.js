@@ -41,24 +41,35 @@ const share = function (api: MeoCloud, download, io, filename, maxTries: number,
 };
 
 const uploadFromUrl = async function (api: MeoCloud, stream, filename, userId, url, io) {
+  let download;
+  let aborted = false;
+
+  const onError = function () {
+    console.log('onError', download);
+    if (download !== undefined) {
+      save.cancel();
+      download.status = 'error';
+      download.save();
+      io.to(`/users/${download._user}`).emit('download', download);
+    }
+  };
+  const save = _.throttle(() => download
+  .save((err, doc, numAffected) => {
+    if (err || !numAffected) {
+      aborted = true;
+      stream.abort();
+    }
+  }), 2000, { 'trailing': false });
+
   return new Promise(async (resolve, reject) => {
     try {
       filename = cleanName(filename);
-      stream.pipe(api.getUploadPipe(filename)).catch(reject);
-
-      const download = await new Download({_user: userId, url, filename}).save();
+      stream.pipe(api.getUploadPipe(filename))
+        .catch(onError);
+      download = await new Download({_user: userId, url, filename}).save();
       resolve();
 
       io.to(`/users/${download._user}`).emit('download', download);
-
-      let aborted = false;
-
-      const save = _.throttle(() => download.save((err, doc, numAffected) => {
-        if (err || !numAffected) {
-          aborted = true;
-          stream.abort();
-        }
-      }), 2000, { 'trailing': false });
 
       stream.on('progress', function (state) {
         download.downloaded = state.size.transferred;
@@ -68,12 +79,8 @@ const uploadFromUrl = async function (api: MeoCloud, stream, filename, userId, u
           .emit('progress', download.id, download.downloaded, download.downloadSize);
 
         save();
-      }).on('error', function (err) {
-        console.log('error', err);
-        save.cancel();
-        download.status = 'error';
-        download.save();
-      }).on('end', function () {
+      }).on('error', onError)
+      .on('end', function () {
         if (!aborted) {
           console.log('progress', 'Finished');
           save.cancel();
@@ -85,12 +92,15 @@ const uploadFromUrl = async function (api: MeoCloud, stream, filename, userId, u
         }
       });
     } catch (error) {
+      console.log('upload error');
+      stream.abort();
+      onError(error);
       reject(error);
     }
   });
 };
 
-function fileDownloadRequest (req: $Request, res: $Response) {
+async function fileDownloadRequest (req: $Request, res: $Response) {
   try {
     const url = req.body.url;
 
@@ -102,7 +112,7 @@ function fileDownloadRequest (req: $Request, res: $Response) {
     };
 
     const r = progress(request(url), progressOptions);
-    r.on('response', function (res2) {
+    r.on('response', async function (res2) {
       let filename: ?string;
       if (res2.headers['content-disposition']) {
         const parts = res2.headers['content-disposition'].split(';');
@@ -123,16 +133,19 @@ function fileDownloadRequest (req: $Request, res: $Response) {
       console.log('Downloading:', filename);
 
       const meoCloud = new MeoCloud(req.meocloud);
-      uploadFromUrl(meoCloud, r, filename, req.user.id, url, req.io).then(() => {
+      uploadFromUrl(meoCloud, r, filename, req.user.id, url, req.io)
+      .then(() => {
         res.end('Download started.');
-      }).catch(onFailure);
+      })
+      .catch(onFailure);
     }).on('error', onFailure);
   } catch (error) {
+    console.log('File error');
     res.handleServerError(error);
   }
 }
 
-function youtubeDownloadRequest (req: $Request, res: $Response) {
+async function youtubeDownloadRequest (req: $Request, res: $Response) {
   new Promise((resolve, reject) => {
     try {
       const url = req.body.youtube;
