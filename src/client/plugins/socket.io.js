@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const url = (process.BROWSER_BUILD && window.location.href) || `http://${process.env.HOST}:${process.env.PORT}/`;
+const url = (process.browser && window.location.href) || `http://${process.env.HOST}:${process.env.PORT}/`;
 
 export const socket = io(url, {
   autoConnect: false

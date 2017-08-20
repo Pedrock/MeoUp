@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 // import cors from 'cors'
 import express from 'express';
 import mongoose from 'mongoose';
-import Nuxt from 'nuxt';
+import { Nuxt, Builder } from 'nuxt';
 import http from 'http';
 import socketioJwt from 'socketio-jwt';
 import socketio from 'socket.io';
@@ -53,24 +53,24 @@ io.on('connection', socketioJwt.authorize({
 });
 
 // https://github.com/nuxt/express/tree/master/template
-// Start nuxt.js
-async function start () {
-  // Import and Set Nuxt.js options
-  config.dev = !(process.env.NODE_ENV === 'production');
-  // Instantiate nuxt.js
-  const nuxt = new Nuxt(config);
-  // Add nuxt.js middleware
-  app.use(nuxt.render);
-
-  // Listen to the server
-  server.listen(PORT, HOST);
-  console.log(`Server listening on http://${HOST}:${PORT}`); // eslint-disable-line no-console
+// Import and Set Nuxt.js options
+config.dev = !(process.env.NODE_ENV === 'production');
+// Instantiate nuxt.js
+const nuxt = new Nuxt(config);
+// Build only in dev mode
+if (config.dev) {
+  const builder = new Builder(nuxt);
+  builder.build();
 }
+// Add nuxt.js middleware
+app.use(nuxt.render);
+
+// Listen to the server
+server.listen(PORT, HOST);
+console.log(`Server listening on http://${HOST}:${PORT}`);
 
 // setup the database connection
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB_URL, { useMongoClient: true });
-
-start();
 
 export default app;

@@ -41,8 +41,7 @@
 </template>
 
 <script>
-import axios from '../plugins/axios';
-import DownloadsList from '../components/downloads-list.vue';
+import axios from '~/plugins/axios';
 import { mapMutations } from 'vuex';
 
 export default {
@@ -99,7 +98,9 @@ export default {
       }
     }
   },
-  components: {DownloadsList},
+  components: {
+    DownloadsList: () => import('~/components/downloads-list.vue')
+  },
   directives: {
     focus: {
       inserted: function (el) {

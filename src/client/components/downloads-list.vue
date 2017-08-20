@@ -35,8 +35,8 @@
 </template>
 
 <script>
-  import { socket } from '../plugins/socket.io.js';
-  import axios from '../plugins/axios';
+  import { socket } from '~/plugins/socket.io.js';
+  import axios from '~/plugins/axios';
   import { mapMutations } from 'vuex';
   import VideoJs from './video-js';
 

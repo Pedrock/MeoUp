@@ -1,4 +1,4 @@
-import axios from '../plugins/axios';
+import axios from '~/plugins/axios';
 
 export default async function ({ store, redirect }) {
   if (store.state.user.isAuthenticated && !store.state.user.oauthed) {
