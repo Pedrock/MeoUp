@@ -63,7 +63,7 @@ async function youtubeDownloadRequest (req: $Request, res: $Response) {
     try {
       const url = req.body.youtube;
       const args = ['--no-cache-dir'];
-      const options = { maxBuffer: 10000 * 1024 };
+      const options = { maxBuffer: 20000 * 1024 };
       youtubedl.getInfo(url, args, options, async (err, info) => {
         if (err) {
           return reject(err);
