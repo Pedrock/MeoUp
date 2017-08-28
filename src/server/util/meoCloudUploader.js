@@ -55,7 +55,7 @@ export default class MeoCloudUploader {
       try {
         const { filename, userId, url } = this;
         this.stream.pipe(this.api.getUploadPipe(filename))
-          .catch(this.onError);
+          .catch(this.onError.bind(this));
         this.download = await new Download({_user: userId, url, filename}).save();
         resolve();
 
@@ -68,7 +68,7 @@ export default class MeoCloudUploader {
           this.io.to(`/users/${this.download._user}`)
           .emit('progress', this.download.id, this.download.downloaded, this.download.downloadSize);
           this.save();
-        }).on('error', this.onError)
+        }).on('error', this.onError.bind(this))
         .on('end', () => {
           if (!this.aborted) {
             console.log('progress', 'Finished');
@@ -95,7 +95,6 @@ export default class MeoCloudUploader {
       if (err || !numAffected) {
         this.api.delete(this.filename);
       } else {
-        console.log('share success');
         this.io.to(`/users/${this.download._user}`).emit('download', this.download);
       }
     };
@@ -106,6 +105,7 @@ export default class MeoCloudUploader {
         if (body) {
           this.download.shareUrl = JSON.parse(body).url;
           this.download.status = 'finished';
+          console.log('share success');
           return this.save(afterSave);
         } else {
           throw new Error('Share with empty body');
