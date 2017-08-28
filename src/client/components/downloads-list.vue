@@ -107,6 +107,7 @@
 
         const getSources = download => {
           if (download.status !== 'finished') return null;
+          if (!download.shareUrl) return null;
           const extensionMatch = download.shareUrl.match(extensionRegex);
           if (!extensionMatch) return null;
           const extension = extensionMatch[1];
