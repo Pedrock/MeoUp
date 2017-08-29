@@ -1,6 +1,6 @@
 {
   "name": "meoup",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Website which allows users to transfer files and Youtube videos from a URL directly to a MeoCloud account.",
   "author": "Pedro Câmara <camara-pedro@hotmail.com>",
   "private": true,
@@ -52,6 +52,7 @@
     "socketio-jwt": "4.5.0",
     "source-map-support": "0.4.15",
     "speakeasy": "2.0.0",
+    "stream-buffers": "^3.0.1",
     "uuid": "3.0.1",
     "validator": "7.2.0",
     "video.js": "5.20.1",

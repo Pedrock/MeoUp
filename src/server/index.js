@@ -20,6 +20,10 @@ if (!DB_URL) {
   throw new Error('process.env.DB_URL not set');
 }
 
+process.on('unhandledRejection', (reason, p) => {
+  console.error('Unhandled Rejection at: Promise', p);
+});
+
 const app = express();
 
 const server = (http : any).Server(app);

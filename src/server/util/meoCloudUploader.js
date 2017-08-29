@@ -10,6 +10,7 @@ const cleanName = function (url) {
 export default class MeoCloudUploader {
   api: MeoCloud;
   stream: any;
+  uploadStream: any;
   filename: string;
   userId: string;
   url: string;
@@ -34,7 +35,7 @@ export default class MeoCloudUploader {
       .save((err, doc, numAffected) => {
         if (err || !numAffected) {
           this.aborted = true;
-          this.stream.abort();
+          this._abort();
         }
         if (callback) {
           callback(err, doc, numAffected);
@@ -43,6 +44,11 @@ export default class MeoCloudUploader {
   }
 
   onError () {
+    console.error('download/upload error');
+    if (!this.aborted) {
+      this._abort();
+      this.aborted = true;
+    }
     if (this.download !== null) {
       this.download.status = 'error';
       this.download.save();
@@ -54,8 +60,11 @@ export default class MeoCloudUploader {
     return new Promise(async (resolve, reject) => {
       try {
         const { filename, userId, url } = this;
-        this.stream.pipe(this.api.getUploadPipe(filename))
-          .catch(this.onError.bind(this));
+        this.uploadStream = this.stream
+        .on('error', this.onError.bind(this))
+        .pipe(this.api.getChuckedUploadStream(filename))
+        .on('error', this.onError.bind(this));
+
         this.download = await new Download({_user: userId, url, filename}).save();
         resolve();
 
@@ -68,8 +77,9 @@ export default class MeoCloudUploader {
           this.io.to(`/users/${this.download._user}`)
           .emit('progress', this.download.id, this.download.downloaded, this.download.downloadSize);
           this.save();
-        }).on('error', this.onError.bind(this))
-        .on('end', () => {
+        });
+
+        this.uploadStream.on('finish', () => {
           if (!this.aborted) {
             console.log('progress', 'Finished');
             this.download.status = 'finished';
@@ -80,12 +90,16 @@ export default class MeoCloudUploader {
           }
         });
       } catch (error) {
-        console.error('upload error', error);
-        this.stream.abort();
+        this._abort();
         this.onError();
         reject(error);
       }
     });
+  }
+
+  _abort () {
+    this.stream.abort();
+    this.uploadStream.abort();
   }
 
   _share (level: number = 1) {
@@ -93,7 +107,9 @@ export default class MeoCloudUploader {
 
     const afterSave = (err, doc, numAffected) => {
       if (err || !numAffected) {
-        this.api.delete(this.filename);
+        if (this.download.status === 'finished') {
+          this.api.delete(this.filename);
+        }
       } else {
         this.io.to(`/users/${this.download._user}`).emit('download', this.download);
       }

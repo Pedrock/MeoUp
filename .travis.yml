@@ -18,7 +18,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -r --delete-after --exclude=".git" --exclude="node_modules" --quiet $TRAVIS_BUILD_DIR/ admin@meoup.pedrocamara.me:~/meoup-server && ssh admin@meoup.pedrocamara.me -t 'cd ~/meoup-server && npm i && pm2 restart meoup'
+  script: rsync -r --delete-after --exclude=".git" --exclude="node_modules" --quiet $TRAVIS_BUILD_DIR/ admin@meoup.pedrocamara.me:~/meoup-server && ssh admin@meoup.pedrocamara.me -t 'cd ~/meoup-server && npm i && pm2 reload meoup'
   on:
     branch: master
 after_deploy:

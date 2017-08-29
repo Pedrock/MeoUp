@@ -107,9 +107,11 @@ export const index = {
         if (!download) {
           return res.handleServerError(new ServerError('Not found', { status: 404 }));
         }
-        const meoCloud = new MeoCloud(req.meocloud);
-        meoCloud.delete(download.filename);
-        req.io.to(`/users/${download._user}`).emit('delete', download.id);
+        if (download.status === 'finished') {
+          const meoCloud = new MeoCloud(req.meocloud);
+          meoCloud.delete(download.filename);
+          req.io.to(`/users/${download._user}`).emit('delete', download.id);
+        }
         res.end();
       } catch (error) {
         res.handleServerError(error);
