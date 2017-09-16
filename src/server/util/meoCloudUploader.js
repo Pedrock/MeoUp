@@ -33,7 +33,10 @@ export default class MeoCloudUploader {
 
     this.save = _.throttle((callback) => this.download
       .save((err, doc, numAffected) => {
-        if (err || !numAffected) {
+        if (err) {
+          console.error(err);
+        } else if (!numAffected) {
+          console.log('numAffected', numAffected);
           this.aborted = true;
           this._abort();
         }
