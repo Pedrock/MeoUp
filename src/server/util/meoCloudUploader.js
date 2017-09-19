@@ -31,19 +31,22 @@ export default class MeoCloudUploader {
     this.download = null;
     this.aborted = false;
 
-    this.save = _.throttle((callback) => this.download
-      .save((err, doc, numAffected) => {
-        if (err) {
-          console.error(err);
-        } else if (!numAffected) {
-          console.log('numAffected', numAffected);
-          this.aborted = true;
-          this._abort();
-        }
-        if (callback) {
-          callback(err, doc, numAffected);
-        }
-      }), 1000);
+    this.save = _.throttle((callback) => {
+      this.download.updatedAt = new Date();
+      return this.download
+        .save((err, doc, numAffected) => {
+          if (err) {
+            console.error(err);
+          } else if (!numAffected) {
+            console.log('numAffected', numAffected);
+            this.aborted = true;
+            this._abort();
+          }
+          if (callback) {
+            callback(err, doc, numAffected);
+          }
+        });
+    }, 1000);
   }
 
   onError () {
