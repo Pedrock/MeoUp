@@ -30,7 +30,7 @@ async function fileDownloadRequest (req: $Request, res: $Response) {
         const parts = res2.headers['content-disposition'].split(';');
         for (let i = 0; i < parts.length; i++) {
           const parts2 = parts[i].split('=');
-          if (parts2[0] === 'filename') {
+          if (parts2[0].trim() === 'filename') {
             filename = parts2[1];
             break;
           }
