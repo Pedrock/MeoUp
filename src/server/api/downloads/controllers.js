@@ -62,13 +62,14 @@ async function youtubeDownloadRequest (req: $Request, res: $Response) {
   new Promise((resolve, reject) => {
     try {
       const url = req.body.youtube;
-      const args = ['--no-cache-dir'];
+      const args = ['--no-cache-dir', '--force-ipv4'];
       const options = { maxBuffer: 20000 * 1024 };
       youtubedl.getInfo(url, args, options, async (err, info) => {
         if (err) {
           return reject(err);
         }
         try {
+          console.log(`Downloading from ${info.url}`);
           const meoCloud = new MeoCloud(req.meocloud);
           const stream = progress(request.get(info.url), progressOptions);
           const meoCloudUploader = new MeoCloudUploader(meoCloud, stream, info._filename, req.user.id, url, req.io);

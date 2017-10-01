@@ -121,6 +121,9 @@ class ChuckedUploadStream extends stream.Writable {
   }
 
   processBuffer (callback: Function) {
+    if (this.buffer.size() === 0) {
+      return callback();
+    }
     const chunk = this.buffer.getContents(chuckSize);
     this.sendChuck(chunk)
     .then(JSON.parse)
@@ -154,6 +157,10 @@ class ChuckedUploadStream extends stream.Writable {
     this.processBuffer((err) => {
       if (err) {
         return callback(err);
+      }
+      if (this.uploadId === undefined) {
+        console.error('No upload ID');
+        return callback(new Error('No upload ID'));
       }
       const { root, content_endpoint: contentEndpoint } = this.api.config.api;
       const params = { upload_id: this.uploadId };
