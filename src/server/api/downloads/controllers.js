@@ -19,8 +19,8 @@ async function fileDownloadRequest (req: $Request, res: $Response) {
     const onFailure = (err) => {
       if (!res.headersSent) {
         res.status(500).end('Download failed.');
-        console.log(err);
       }
+      console.log(err);
     };
 
     const r = progress(request(url), progressOptions);
