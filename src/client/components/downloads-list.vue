@@ -49,7 +49,7 @@
     props: ['downloads'],
     data () {
       return {
-        myDownloads: this.downloads,
+        myDownloads: this.downloads || [],
         deleted: {},
         watching: {}
       };
