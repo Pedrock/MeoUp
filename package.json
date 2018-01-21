@@ -1,6 +1,6 @@
 {
   "name": "meoup",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Website which allows users to transfer files and Youtube videos from a URL directly to a MeoCloud account.",
   "author": "Pedro Câmara <camara-pedro@hotmail.com>",
   "private": true,
@@ -12,9 +12,8 @@
     "build-server": "backpack build",
     "build-client": "nuxt build",
     "precommit": "run-s lint",
-    "lint": "eslint --ext .js,.vue .",
-    "test": "run-s lint build",
-    "flow": "flow"
+    "lint": "eslint --ext .js,.vue,.ts .",
+    "test": "run-s lint build"
   },
   "dependencies": {
     "@nuxtjs/component-cache": "^1.1.0",
@@ -66,25 +65,31 @@
     "youtube-dl": "1.11.1"
   },
   "devDependencies": {
-    "babel-eslint": "7.2.3",
-    "babel-preset-flow": "6.23.0",
+    "@types/express": "^4.11.0",
+    "@types/mongoose": "^4.7.33",
+    "@types/node": "^9.3.0",
+    "@types/socket.io": "^1.4.31",
+    "awesome-typescript-loader": "^3.4.1",
+    "babel-eslint": "^8.2.1",
     "backpack-core": "^0.4.2",
     "es6-promise": "^4.1.1",
     "eslint": "3.19.0",
     "eslint-config-standard": "10.2.1",
     "eslint-loader": "1.9.0",
-    "eslint-plugin-flowtype": "2.35.0",
+    "eslint-plugin-flowtype": "^2.41.0",
     "eslint-plugin-html": "2.0.3",
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-node": "4.2.2",
     "eslint-plugin-promise": "3.5.0",
     "eslint-plugin-standard": "3.0.1",
+    "eslint-plugin-typescript": "^0.8.1",
     "file-loader": "0.11.2",
-    "flow-bin": "0.51.0",
-    "flow-typed": "2.1.5",
     "rimraf": "2.6.1",
     "stylus": "0.54.5",
     "stylus-loader": "3.0.1",
+    "ts-loader": "^3.3.0",
+    "typescript": "^2.6.2",
+    "typescript-eslint-parser": "^12.0.0",
     "uglify-js": "^2.8.29",
     "webpack": "^3.5.5"
   }

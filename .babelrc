@@ -1,6 +1,0 @@
-{
-  "presets": ["flow"],
-  "plugins": [
-    ["transform-object-rest-spread", { "useBuiltIns": true }]
-  ]
-}
