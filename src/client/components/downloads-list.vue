@@ -35,8 +35,8 @@
 </template>
 
 <script>
-  import { socket } from '../plugins/socket.io.js';
-  import axios from '../plugins/axios';
+  import { socket } from '~/plugins/socket.io.js';
+  import axios from '~/plugins/axios';
   import { mapMutations } from 'vuex';
   import VideoJs from './video-js';
 
@@ -49,7 +49,7 @@
     props: ['downloads'],
     data () {
       return {
-        myDownloads: this.downloads,
+        myDownloads: this.downloads || [],
         deleted: {},
         watching: {}
       };
@@ -107,6 +107,7 @@
 
         const getSources = download => {
           if (download.status !== 'finished') return null;
+          if (!download.shareUrl) return null;
           const extensionMatch = download.shareUrl.match(extensionRegex);
           if (!extensionMatch) return null;
           const extension = extensionMatch[1];

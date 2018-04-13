@@ -9,13 +9,10 @@ module.exports = {
   // required to lint *.vue files
   plugins: [
     'html',
-    'flowtype'
   ],
   // add your custom rules here
   rules: {
     semi: ["error", "always", { "omitLastInOneLineBlock": true}],
-    "flowtype/define-flow-type": 1,
-    "flowtype/use-flow-type": 1
   },
   globals: {}
 }

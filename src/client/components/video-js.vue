@@ -1,5 +1,5 @@
 <template>
-    <div data-vjs-player>
+    <div data-vjs-player :style="wrapperStyle" ref="wrapper">
         <video ref="video" class="video-js vjs-fluid vjs-big-play-centered" controls width="640" height="264"></video>
     </div>
 </template>
@@ -8,15 +8,43 @@
   import videojs from 'video.js';
   import 'videojs-hotkeys';
 
+  const minSpacing = 20; // leave at least 20px between the video and the top and bottom margins of the browser
+
   export default {
     name: 'video-js',
     props: ['sources', 'destroyDelay'],
     data () {
       return {
-        player: null
+        player: null,
+        videoHeight: null,
+        videoWidth: null,
+        innerHeight: null,
+        innerWidth: null
       };
     },
+    computed: {
+      wrapperStyle () {
+        const { innerHeight, innerWidth, videoHeight, videoWidth } = this;
+        if ((innerHeight - minSpacing) / innerWidth < videoHeight / videoWidth) {
+          return {
+            paddingTop: `${(innerHeight - minSpacing) / innerWidth * 100}%`
+          };
+        } else {
+          return {
+            paddingTop: `${videoHeight / videoWidth * 100}%`
+          };
+        }
+      }
+    },
+    methods: {
+      handleResize () {
+        this.innerHeight = window.innerHeight;
+        this.innerWidth = this.$refs.wrapper.clientWidth;
+      }
+    },
     mounted () {
+      this.handleResize();
+      window.addEventListener('resize', this.handleResize);
       this.player = videojs(this.$refs.video, {
         sources: this.sources,
         playbackRates: [1, 1.5, 2]
@@ -27,8 +55,13 @@
           enableVolumeScroll: false
         });
       });
+      this.player.on('loadedmetadata', () => {
+        this.videoHeight = this.player.videoHeight();
+        this.videoWidth = this.player.videoWidth();
+      });
     },
     beforeDestroy () {
+      window.removeEventListener('resize', this.handleResize);
       if (this.player) {
         if (this.destroyDelay) {
           setTimeout(this.player.dispose.bind(this.player), 1000);
@@ -61,7 +94,7 @@
         width: 10em
     }
 
-    .video-js .vjs-controls-disabled .vjs-big-play-button {
+    .video-js.vjs-controls-disabled .vjs-big-play-button {
         display: none!important
     }
 
@@ -264,7 +297,7 @@
         top: 50%;
         left: 50%;
         margin-left: -1em;
-        margin-top: -1em;
+        margin-top: -1.45em;
         width: 2em;
         height: 2em;
         line-height: 2em;
@@ -306,21 +339,16 @@
         background-color: #2d3c33;
     }
 
-    .video-js .vjs-big-play-button {
-        background-color: rgba(0,0,0,0.45);
-        font-size: 3.5em;
-        border-radius: 50%;
-        height: 2em !important;
-        line-height: 2em !important;
-        margin-top: -1.45em !important
-    }
-
     .video-js:hover .vjs-big-play-button,.video-js .vjs-big-play-button:focus,.video-js .vjs-big-play-button:active {
         background-color: rgba(36,131,213,0.9)
     }
 
     .video-js .vjs-loading-spinner {
-        border-color: rgba(36,131,213,0.8)
+        border-color: rgba(36,131,213,0.8);
+    }
+
+    .video-js:not(.vjs-controls-disabled) .vjs-loading-spinner {
+        margin-top: -50px;
     }
 
     .video-js .vjs-control-bar2 {
