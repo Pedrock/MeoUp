@@ -10,7 +10,8 @@ RUN npm install
 
 COPY . .
 
-ENV NODE_ENV=production
+ENV PORT=8080 \
+    NODE_ENV=production
 
 RUN npm run build
 
