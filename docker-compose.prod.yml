@@ -1,0 +1,9 @@
+version: '2'
+services:
+  node:
+    environment:
+      - DB_URL
+      - MEOCLOUD_CONSUMER_KEY
+      - MEOCLOUD_CONSUMER_SECRET
+      - SECRET
+      - SESSION_PASSWORD
