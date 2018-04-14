@@ -1,0 +1,50 @@
+version: '2'
+services:
+  node:
+    image: pedrock/meoup
+    restart: always
+    build: .
+    links:
+      - "redis"
+    expose:
+      - "8080"
+    environment:
+      HOST: "0.0.0.0"
+      SESSION_HOST: redis
+      VIRTUAL_PORT: "8080"
+      VIRTUAL_HOST: meoup.pedrocamara.me
+      LETSENCRYPT_HOST: meoup.pedrocamara.me
+      LETSENCRYPT_EMAIL: camara-pedro@hotmail.com
+      # LETSENCRYPT_TEST: "true"
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes: 
+      - redis-data:/data
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    container_name: nginx-proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '/etc/nginx/vhost.d'
+      - '/usr/share/nginx/html'
+      - '/etc/nginx/certs:/etc/nginx/certs:ro'
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+
+  letsencrypt-nginx-proxy:
+    image: 'jrcs/letsencrypt-nginx-proxy-companion'
+    restart: always
+    volumes:
+      - '/etc/nginx/certs:/etc/nginx/certs'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    volumes_from:
+      - nginx-proxy
+
+volumes:
+  redis-data:
+    driver: local
