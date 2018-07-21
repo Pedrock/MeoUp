@@ -41,7 +41,7 @@
   import VideoJs from './video-js';
 
   const extensionRegex = /\.([0-9a-z]+)\/$/i;
-  const mediaExtensions = ['flac', 'ogv', 'ogm', 'ogg', 'oga', 'webm', 'wav', 'mp4', 'm4v', 'm4a', 'mp3', 'amr', 'avi', '3gp'];
+  const mediaExtensions = ['flac', 'ogv', 'ogm', 'ogg', 'oga', 'webm', 'wav', 'mp4', 'm4v', 'm4a', 'mp3', 'amr', 'avi', '3gp', 'mkv'];
 
   export default {
     components: { VideoJs },
